@@ -1,14 +1,14 @@
 import FieldItem from './FieldItem'
 import SectionBlock from './SectionBlock'
 
-export default function FormRenderer({ formData }) {
+export default function FormRenderer({ formData, onUpdateField }) {
   if (!formData) return null
 
   return (
     <div className="form-renderer">
       <SectionBlock>
         {formData.fields.map((field) => (
-          <FieldItem key={field.key} field={field} />
+          <FieldItem key={field.key} field={field} onUpdateField={onUpdateField} />
         ))}
       </SectionBlock>
 
@@ -21,6 +21,7 @@ export default function FormRenderer({ formData }) {
               title: formData.comment.title,
               options: [],
             }}
+            onUpdateField={onUpdateField}
           />
         </SectionBlock>
       )}

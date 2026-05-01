@@ -5,11 +5,15 @@ import JsonImport from './components/JsonImport'
 import './assets/styles.css'
 
 export default function App() {
-  const { formData, isDirty, loadForm, loadDefault, resetToLoaded } = useFormState()
+  const { formData, isDirty, loadForm, loadDefault, resetToLoaded, updateField } = useFormState()
   const [showImport, setShowImport] = useState(false)
 
   const siteId = formData?._meta?.$id?.split('/').pop() ?? 'default'
   const isDefault = siteId === 'default'
+
+  // schemaName is the prefix used in translation keys during export.
+  // Pre-fill from the loaded JSON's $id when available.
+  const [schemaName, setSchemaName] = useState(isDefault ? '' : siteId)
 
   return (
     <div className="app">
@@ -28,6 +32,7 @@ export default function App() {
             <button className="btn btn-ghost btn-sm" onClick={() => {
               if (isDirty && !confirm('Masz niezapisane zmiany. Czy chcesz wrócić do domyślnego schematu?')) return
               loadDefault()
+              setSchemaName('')
             }}>
               ↩ Wróć do default
             </button>
@@ -36,7 +41,7 @@ export default function App() {
             Wczytaj JSON
           </button>
           <button className="btn btn-primary" disabled>
-            Pobierz JSON
+            Pobierz ZIP
           </button>
         </div>
       </header>
@@ -56,14 +61,29 @@ export default function App() {
           <div className="canvas-meta">
             <span className="meta-label">Schemat:</span>
             <span className="meta-value">{siteId}</span>
+            <span className="meta-label" style={{ marginLeft: 12 }}>Nazwa dla kluczy:</span>
+            <input
+              className="schema-name-input"
+              value={schemaName}
+              onChange={(e) => setSchemaName(e.target.value)}
+              placeholder="np. pl_krs_auto"
+              title="Prefiks używany w kluczach tłumaczeń przy eksporcie"
+            />
             {isDirty && <span className="meta-saved-note">· zmiany zapisane lokalnie</span>}
           </div>
-          <FormRenderer formData={formData} />
+          <FormRenderer formData={formData} onUpdateField={updateField} />
         </main>
       </div>
 
       {showImport && (
-        <JsonImport onLoad={loadForm} onClose={() => setShowImport(false)} />
+        <JsonImport
+          onLoad={(rawJson) => {
+            loadForm(rawJson)
+            const id = rawJson?.$id?.split('/').pop() ?? rawJson?.properties?.answers?.properties?.$id ?? ''
+            if (id && id !== 'default') setSchemaName(id)
+          }}
+          onClose={() => setShowImport(false)}
+        />
       )}
     </div>
   )
