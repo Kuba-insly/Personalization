@@ -532,6 +532,16 @@ body {
   min-width: 80px;
 }
 
+/* Multiline variant — textarea that grows with content */
+.text-editor-input--area {
+  display: block;
+  width: 100%;
+  resize: none;
+  overflow: hidden;
+  line-height: 1.4;
+  min-height: 24px;
+}
+
 /* Orange variant for textarea labels */
 .text-editor--orange { color: #f97316; }
 .text-editor--orange.text-editor-input { color: #f97316; border-color: #f97316; }

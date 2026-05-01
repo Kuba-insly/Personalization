@@ -59,7 +59,7 @@ export default function FieldItem({ field, onUpdateField }) {
   if (type === 'heading') {
     return (
       <div className="field-heading">
-        <TextEditor value={label} onSave={handleLabelSave} />
+        <TextEditor value={label} onSave={handleLabelSave} multiline />
       </div>
     )
   }
@@ -69,7 +69,7 @@ export default function FieldItem({ field, onUpdateField }) {
       <div className="field-boolean">
         <input type="checkbox" disabled />
         <label>
-          <TextEditor value={label} onSave={handleLabelSave} />
+          <TextEditor value={label} onSave={handleLabelSave} multiline />
         </label>
       </div>
     )
@@ -100,7 +100,7 @@ export default function FieldItem({ field, onUpdateField }) {
     return (
       <div className="field-checkbox-group">
         <div className="field-section-title">
-          <TextEditor value={label} onSave={handleLabelSave} />
+          <TextEditor value={label} onSave={handleLabelSave} multiline />
         </div>
         <DndContext
           sensors={optionSensors}
@@ -134,7 +134,7 @@ export default function FieldItem({ field, onUpdateField }) {
     return (
       <div className="field-row">
         <label className="field-label">
-          <TextEditor value={label} onSave={handleLabelSave} />
+          <TextEditor value={label} onSave={handleLabelSave} multiline />
         </label>
         <div className="field-options-inline">
           {field.options.map((opt) => (
@@ -172,7 +172,7 @@ export default function FieldItem({ field, onUpdateField }) {
   return (
     <div className="field-row">
       <label className="field-label">
-        <TextEditor value={label} onSave={handleLabelSave} />
+        <TextEditor value={label} onSave={handleLabelSave} multiline />
       </label>
       <input className="field-input" type="text" disabled placeholder={label} />
     </div>

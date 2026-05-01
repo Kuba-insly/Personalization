@@ -1,23 +1,28 @@
 import { useState, useRef, useEffect } from 'react'
 
-export default function TextEditor({ value, onSave, className = '' }) {
+export default function TextEditor({ value, onSave, className = '', multiline = false }) {
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(value)
   const inputRef = useRef(null)
 
-  // Resize input to fit its content (scrollWidth trick)
-  function resizeInput(input) {
-    if (!input) return
-    input.style.width = '2px'
-    input.style.width = Math.max(80, Math.min(input.scrollWidth + 2, 700)) + 'px'
+  function resizeInput(el) {
+    if (!el) return
+    el.style.width = '2px'
+    el.style.width = Math.max(80, Math.min(el.scrollWidth + 2, 700)) + 'px'
+  }
+
+  function resizeArea(el) {
+    if (!el) return
+    el.style.height = 'auto'
+    el.style.height = el.scrollHeight + 'px'
   }
 
   useEffect(() => {
-    if (editing && inputRef.current) {
-      resizeInput(inputRef.current)
-      inputRef.current.focus()
-      inputRef.current.select()
-    }
+    if (!editing || !inputRef.current) return
+    if (multiline) resizeArea(inputRef.current)
+    else resizeInput(inputRef.current)
+    inputRef.current.focus()
+    inputRef.current.select()
   }, [editing])
 
   function startEdit(e) {
@@ -39,10 +44,25 @@ export default function TextEditor({ value, onSave, className = '' }) {
 
   function handleChange(e) {
     setDraft(e.target.value)
-    resizeInput(e.target)
+    if (multiline) resizeArea(e.target)
+    else resizeInput(e.target)
   }
 
   if (editing) {
+    if (multiline) {
+      return (
+        <textarea
+          ref={inputRef}
+          className={`text-editor-input text-editor-input--area ${className}`}
+          value={draft}
+          onChange={handleChange}
+          onBlur={commit}
+          onKeyDown={handleKeyDown}
+          onClick={(e) => e.stopPropagation()}
+          rows={1}
+        />
+      )
+    }
     return (
       <input
         ref={inputRef}
