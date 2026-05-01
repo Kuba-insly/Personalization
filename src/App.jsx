@@ -75,8 +75,9 @@ function ToolboxItem({ id, label, icon }) {
 export default function App() {
   const {
     formData, isDirty,
-    loadForm, loadDefault, resetToLoaded,
-    updateField, addField, removeField, moveField, markSaved,
+    loadForm, loadDefault,
+    updateField, addField, removeField, moveField,
+    undoLast, canUndo, resetToOriginal, markSaved,
   } = useFormState()
 
   const [showImport, setShowImport] = useState(false)
@@ -162,15 +163,22 @@ export default function App() {
     >
       <div className="app">
         <header className="toolbar">
-          <h1 className="toolbar-title">IDD Personalization Tool</h1>
+          <h1 className="toolbar-title">Insly - Personalizacja APK</h1>
           <div className="toolbar-actions">
             {isDirty && (
-              <>
-                <span className="dirty-badge">● Niezapisane zmiany</span>
-                <button className="btn btn-ghost btn-sm" onClick={resetToLoaded}>
-                  Cofnij zmiany
-                </button>
-              </>
+              <span className="dirty-badge">● Niezapisane zmiany</span>
+            )}
+            {canUndo && (
+              <button className="btn btn-ghost btn-sm" onClick={undoLast} title="Cofnij ostatnią zmianę">
+                ↩ Cofnij
+              </button>
+            )}
+            {isDirty && (
+              <button className="btn btn-ghost btn-sm" onClick={() => {
+                if (confirm('Przywrócić szablon do stanu sprzed edycji? Wszystkie zmiany zostaną utracone.')) resetToOriginal()
+              }}>
+                Przywróć szablon
+              </button>
             )}
             {!isDefault && (
               <button className="btn btn-ghost btn-sm" onClick={() => {

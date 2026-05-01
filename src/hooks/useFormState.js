@@ -4,6 +4,7 @@ import defaultIdd from '../schema/defaultIdd.json'
 
 const STORAGE_KEY = 'idd-personalization-state'
 const defaultNormalized = normalizeIdd(defaultIdd)
+const HISTORY_LIMIT = 50
 
 function loadFromStorage() {
   try {
@@ -33,11 +34,12 @@ export function useFormState() {
 
   const [formData, setFormData] = useState(stored?.normalized ?? defaultNormalized)
   const [isDirty, setIsDirty] = useState(stored?.isDirty ?? false)
+  // historyLength is state (triggers re-render for canUndo); actual stack is in ref
+  const [historyLength, setHistoryLength] = useState(0)
 
-  // tracks the raw JSON currently loaded (for export and reset)
   const currentRawRef = useRef(stored?.formJson ?? defaultIdd)
-  // tracks the original state at load time (for resetToLoaded)
   const originalRef = useRef(stored?.normalized ?? defaultNormalized)
+  const historyRef = useRef([]) // stack of formData snapshots before each change
 
   // Auto-save to localStorage on every formData change
   useEffect(() => {
@@ -56,10 +58,23 @@ export function useFormState() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload)
   }, [isDirty])
 
+  // Pushes current formData onto the undo stack before a mutation
+  function pushHistory(snapshot) {
+    const next = [...historyRef.current, snapshot]
+    historyRef.current = next.length > HISTORY_LIMIT ? next.slice(-HISTORY_LIMIT) : next
+    setHistoryLength(historyRef.current.length)
+  }
+
+  function clearHistory() {
+    historyRef.current = []
+    setHistoryLength(0)
+  }
+
   function loadForm(rawJson) {
     const normalized = normalizeIdd(rawJson)
     currentRawRef.current = rawJson
     originalRef.current = normalized
+    clearHistory()
     setFormData(normalized)
     setIsDirty(false)
     saveToStorage(rawJson, false)
@@ -68,12 +83,14 @@ export function useFormState() {
   function loadDefault() {
     currentRawRef.current = defaultIdd
     originalRef.current = defaultNormalized
+    clearHistory()
     setFormData(defaultNormalized)
     setIsDirty(false)
     clearStorage()
   }
 
   function updateField(key, changes) {
+    pushHistory(formData)
     setFormData((prev) => ({
       ...prev,
       fields: prev.fields.map((f) => (f.key === key ? { ...f, ...changes } : f)),
@@ -81,20 +98,8 @@ export function useFormState() {
     setIsDirty(true)
   }
 
-  function resetToLoaded() {
-    setFormData(originalRef.current)
-    setIsDirty(false)
-    saveToStorage(currentRawRef.current, false)
-  }
-
-  // Called after a successful ZIP export — marks current state as the new baseline
-  function markSaved() {
-    originalRef.current = formData
-    setIsDirty(false)
-    saveToStorage(currentRawRef.current, false)
-  }
-
   function addField(newField, beforeKey) {
+    pushHistory(formData)
     setFormData((prev) => {
       const fields = [...prev.fields]
       const idx = beforeKey ? fields.findIndex((f) => f.key === beforeKey) : -1
@@ -105,6 +110,7 @@ export function useFormState() {
   }
 
   function removeField(key) {
+    pushHistory(formData)
     setFormData((prev) => ({
       ...prev,
       fields: prev.fields.filter((f) => f.key !== key),
@@ -113,6 +119,7 @@ export function useFormState() {
   }
 
   function moveField(fromKey, toKey) {
+    pushHistory(formData)
     setFormData((prev) => {
       const fields = [...prev.fields]
       const from = fields.findIndex((f) => f.key === fromKey)
@@ -125,16 +132,44 @@ export function useFormState() {
     setIsDirty(true)
   }
 
+  // Undo the last single change
+  function undoLast() {
+    if (historyRef.current.length === 0) return
+    const previous = historyRef.current[historyRef.current.length - 1]
+    historyRef.current = historyRef.current.slice(0, -1)
+    setHistoryLength(historyRef.current.length)
+    setFormData(previous)
+    setIsDirty(historyRef.current.length > 0)
+  }
+
+  // Restore to the state when the form was last loaded/saved
+  function resetToOriginal() {
+    clearHistory()
+    setFormData(originalRef.current)
+    setIsDirty(false)
+    saveToStorage(currentRawRef.current, false)
+  }
+
+  // Called after a successful ZIP export — marks current state as the new baseline
+  function markSaved() {
+    originalRef.current = formData
+    clearHistory()
+    setIsDirty(false)
+    saveToStorage(currentRawRef.current, false)
+  }
+
   return {
     formData,
     isDirty,
+    canUndo: historyLength > 0,
     loadForm,
     loadDefault,
     updateField,
     addField,
     removeField,
     moveField,
-    resetToLoaded,
+    undoLast,
+    resetToOriginal,
     markSaved,
     currentRaw: currentRawRef.current,
   }
