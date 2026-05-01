@@ -76,7 +76,7 @@ export default function App() {
   const {
     formData, isDirty,
     loadForm, loadDefault, resetToLoaded,
-    updateField, addField, removeField, moveField,
+    updateField, addField, removeField, moveField, markSaved,
   } = useFormState()
 
   const [showImport, setShowImport] = useState(false)
@@ -143,6 +143,7 @@ export default function App() {
       a.download = `idd-${siteSlug || 'export'}-${date}.zip`
       a.click()
       URL.revokeObjectURL(url)
+      markSaved()
       if (translationCount === 0) {
         alert('ZIP pobrany. Brak nowych/zmienionych tłumaczeń — plik translations.txt nie został dodany.')
       }

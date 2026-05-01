@@ -87,6 +87,13 @@ export function useFormState() {
     saveToStorage(currentRawRef.current, false)
   }
 
+  // Called after a successful ZIP export — marks current state as the new baseline
+  function markSaved() {
+    originalRef.current = formData
+    setIsDirty(false)
+    saveToStorage(currentRawRef.current, false)
+  }
+
   function addField(newField, beforeKey) {
     setFormData((prev) => {
       const fields = [...prev.fields]
@@ -128,6 +135,7 @@ export function useFormState() {
     removeField,
     moveField,
     resetToLoaded,
+    markSaved,
     currentRaw: currentRawRef.current,
   }
 }
