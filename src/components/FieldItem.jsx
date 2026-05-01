@@ -1,9 +1,49 @@
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  useSortable,
+  rectSortingStrategy,
+  arrayMove,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { fieldLabel, optionLabel } from '../utils/translate'
 import TextEditor from './TextEditor'
+
+function SortableOption({ opt, onSave, onRemove }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: opt.value,
+  })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.35 : 1,
+  }
+  return (
+    <div ref={setNodeRef} style={style} className="field-option field-option--sortable">
+      <span className="option-drag-handle" {...attributes} {...listeners} title="Przeciągnij">⠿</span>
+      <input type="checkbox" disabled />
+      <span>
+        <TextEditor value={opt.customLabel ?? optionLabel(opt)} onSave={onSave} />
+      </span>
+      <button className="option-remove-btn" onClick={onRemove} title="Usuń opcję">×</button>
+    </div>
+  )
+}
 
 export default function FieldItem({ field, onUpdateField }) {
   const { type } = field
   const label = fieldLabel(field)
+
+  // Sensors for option-level drag (checkbox-group). Hooks must be at top level.
+  const optionSensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+  )
 
   function handleLabelSave(newTitle) {
     onUpdateField?.(field.key, { title: newTitle, _titleChanged: true })
@@ -49,14 +89,12 @@ export default function FieldItem({ field, onUpdateField }) {
       onUpdateField?.(field.key, { options: field.options.filter((o) => o.value !== val) })
     }
 
-    function moveOption(val, dir) {
-      const opts = [...field.options]
-      const i = opts.findIndex((o) => o.value === val)
-      if (i < 0) return
-      const j = dir === 'up' ? i - 1 : i + 1
-      if (j < 0 || j >= opts.length) return
-      ;[opts[i], opts[j]] = [opts[j], opts[i]]
-      onUpdateField?.(field.key, { options: opts })
+    function handleOptionDragEnd({ active, over }) {
+      if (!over || active.id === over.id) return
+      const from = field.options.findIndex((o) => o.value === active.id)
+      const to = field.options.findIndex((o) => o.value === over.id)
+      if (from === -1 || to === -1) return
+      onUpdateField?.(field.key, { options: arrayMove(field.options, from, to) })
     }
 
     return (
@@ -64,26 +102,27 @@ export default function FieldItem({ field, onUpdateField }) {
         <div className="field-section-title">
           <TextEditor value={label} onSave={handleLabelSave} />
         </div>
-        <div className="field-options-grid">
-          {field.options.map((opt, idx) => (
-            <div key={opt.value} className="field-option field-option--editable">
-              <input type="checkbox" disabled />
-              <span>
-                <TextEditor
-                  value={opt.customLabel ?? optionLabel(opt)}
+        <DndContext
+          sensors={optionSensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleOptionDragEnd}
+        >
+          <SortableContext
+            items={field.options.map((o) => o.value)}
+            strategy={rectSortingStrategy}
+          >
+            <div className="field-options-grid">
+              {field.options.map((opt) => (
+                <SortableOption
+                  key={opt.value}
+                  opt={opt}
                   onSave={(newLabel) => handleOptionSave(opt.value, newLabel)}
+                  onRemove={() => removeOption(opt.value)}
                 />
-              </span>
-              {onUpdateField && (
-                <div className="option-controls">
-                  <button onClick={() => moveOption(opt.value, 'up')} disabled={idx === 0} title="W górę">↑</button>
-                  <button onClick={() => moveOption(opt.value, 'down')} disabled={idx === field.options.length - 1} title="W dół">↓</button>
-                  <button onClick={() => removeOption(opt.value)} title="Usuń opcję">×</button>
-                </div>
-              )}
+              ))}
             </div>
-          ))}
-        </div>
+          </SortableContext>
+        </DndContext>
         {onUpdateField && (
           <button className="btn-add-option" onClick={addOption}>+ Dodaj opcję</button>
         )}

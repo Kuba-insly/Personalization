@@ -223,30 +223,39 @@ body {
   line-height: 1.4;
 }
 
-/* Option controls (↑↓×) — shown on hover */
-.option-controls {
-  display: none;
-  position: absolute;
-  top: -1px;
-  right: -2px;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0,0,0,.12);
-  z-index: 10;
+/* Option drag handle and delete — shown on hover */
+.field-option--sortable {
+  gap: 4px;
 }
-.field-option--editable:hover .option-controls { display: flex; }
-.option-controls button {
-  padding: 2px 4px;
-  font-size: 10px;
-  cursor: pointer;
+.option-drag-handle {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: #cbd5e1;
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.1s, color 0.1s;
+  user-select: none;
+  line-height: 1.4;
+}
+.option-drag-handle:active { cursor: grabbing; }
+.field-option--sortable:hover .option-drag-handle { opacity: 1; }
+.option-drag-handle:hover { color: #6366f1; }
+
+.option-remove-btn {
+  flex-shrink: 0;
   background: none;
   border: none;
-  color: #64748b;
-  line-height: 1;
+  color: #f87171;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 1px;
+  line-height: 1.4;
+  opacity: 0;
+  transition: opacity 0.1s;
+  margin-left: auto;
 }
-.option-controls button:hover:not(:disabled) { color: #1e293b; background: #f1f5f9; }
-.option-controls button:disabled { opacity: 0.25; cursor: default; }
+.field-option--sortable:hover .option-remove-btn { opacity: 1; }
+.option-remove-btn:hover { color: #dc2626; }
 
 .btn-add-option {
   margin-top: 8px;
