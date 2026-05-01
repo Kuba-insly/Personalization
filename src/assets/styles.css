@@ -5,12 +5,13 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 14px;
   color: #1a1a2e;
-  background: #f5f7fa;
+  background: #f0f2f5;
 }
 
+/* ── Toolbar ─────────────────────────────────────────── */
 .app {
   min-height: 100vh;
   display: flex;
@@ -18,23 +19,333 @@ body {
 }
 
 .toolbar {
-  background: #2563eb;
+  background: #1e293b;
   color: white;
-  padding: 12px 24px;
+  padding: 0 20px;
+  height: 52px;
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
 }
 
-.toolbar h1 {
-  font-size: 18px;
+.toolbar-title {
+  font-size: 16px;
   font-weight: 600;
+  margin-right: auto;
 }
 
-.main-content {
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dirty-badge {
+  font-size: 12px;
+  color: #fbbf24;
+  font-weight: 500;
+}
+
+/* ── Buttons ─────────────────────────────────────────── */
+.btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s, opacity 0.15s;
+}
+.btn:disabled { opacity: 0.4; cursor: default; }
+.btn-primary { background: #2563eb; color: white; }
+.btn-primary:hover:not(:disabled) { background: #1d4ed8; }
+.btn-secondary { background: #475569; color: white; }
+.btn-secondary:hover { background: #334155; }
+.btn-ghost { background: transparent; color: #94a3b8; border: 1px solid #475569; }
+.btn-ghost:hover { background: #334155; color: white; }
+.btn-sm { padding: 4px 10px; font-size: 12px; }
+
+/* ── Workspace layout ────────────────────────────────── */
+.workspace {
   flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── Toolbox (left sidebar) ──────────────────────────── */
+.toolbox {
+  width: 200px;
+  flex-shrink: 0;
+  background: white;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbox-header {
+  padding: 12px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.toolbox-placeholder {
+  padding: 16px;
+  color: #94a3b8;
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.6;
+}
+.toolbox-note { font-size: 11px; margin-top: 4px; color: #cbd5e1; }
+
+/* ── Canvas (main form area) ─────────────────────────── */
+.canvas {
+  flex: 1;
+  overflow-y: auto;
   padding: 24px;
-  max-width: 900px;
-  margin: 0 auto;
+}
+
+.canvas-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 12px;
+}
+.meta-label { color: #64748b; }
+.meta-value {
+  background: #e0e7ff;
+  color: #3730a3;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+/* ── Form Renderer ───────────────────────────────────── */
+.form-renderer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 860px;
+}
+
+.section-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ── Field types ─────────────────────────────────────── */
+
+/* Section heading (object type) */
+.field-heading {
+  padding: 16px 0 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+/* Boolean checkbox */
+.field-boolean {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.field-boolean input[type="checkbox"] { width: 16px; height: 16px; cursor: not-allowed; }
+.field-boolean label { font-size: 13px; color: #374151; }
+
+/* Checkbox group (array + enum) — main content sections */
+.field-checkbox-group {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+}
+
+.field-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.field-options-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px 8px;
+}
+
+@media (max-width: 700px) {
+  .field-options-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.field-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #374151;
+  cursor: default;
+  padding: 3px 0;
+}
+.field-option input[type="checkbox"] { width: 14px; height: 14px; cursor: not-allowed; }
+
+/* Text / textarea fields */
+.field-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 4px;
+}
+
+.field-label {
+  font-size: 13px;
+  color: #374151;
+  font-weight: 500;
+  min-width: 180px;
+  padding-top: 4px;
+}
+
+.field-input {
+  flex: 1;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  padding: 5px 9px;
+  font-size: 13px;
+  background: #f9fafb;
+  color: #6b7280;
+}
+
+.field-textarea {
+  flex: 1;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  padding: 6px 9px;
+  font-size: 13px;
+  background: #f9fafb;
+  color: #6b7280;
+  resize: vertical;
+}
+
+/* Select / radio inline */
+.field-options-inline {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+.field-option-inline {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: #374151;
+}
+
+/* ── JSON Import Modal ───────────────────────────────── */
+.json-import-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.json-import-modal {
+  background: white;
+  border-radius: 12px;
+  padding: 28px 32px;
+  width: 560px;
+  max-width: 95vw;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+
+.json-import-modal h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.drop-zone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 28px;
+  text-align: center;
+  color: #64748b;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.drop-zone:hover, .drop-zone--active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.import-divider {
+  text-align: center;
+  font-size: 12px;
+  color: #94a3b8;
+  position: relative;
+}
+.import-divider::before, .import-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: #e2e8f0;
+}
+.import-divider::before { left: 0; }
+.import-divider::after { right: 0; }
+
+.import-textarea {
   width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  resize: vertical;
+  color: #374151;
+}
+
+.import-error {
+  color: #dc2626;
+  font-size: 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.import-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }

@@ -1,36 +1,60 @@
-import { useEffect, useState } from 'react'
-import { normalizeIdd } from './utils/jsonNormalizer'
-import defaultIdd from './schema/defaultIdd.json'
+import { useState } from 'react'
+import { useFormState } from './hooks/useFormState'
+import FormRenderer from './components/FormRenderer'
+import JsonImport from './components/JsonImport'
+import './assets/styles.css'
 
-function App() {
-  const [formData, setFormData] = useState(null)
+export default function App() {
+  const { formData, isDirty, loadForm, resetToOriginal } = useFormState()
+  const [showImport, setShowImport] = useState(false)
 
-  useEffect(() => {
-    const normalized = normalizeIdd(defaultIdd)
-    setFormData(normalized)
-    console.log('Normalized IDD:', normalized)
-    console.log('Field count:', normalized.fields.length)
-    console.log('Field types:', [...new Set(normalized.fields.map(f => f.type))])
-  }, [])
+  const siteId = formData?._meta?.$id?.split('/').pop() ?? 'default'
 
   return (
     <div className="app">
       <header className="toolbar">
-        <h1>IDD Personalization Tool</h1>
+        <h1 className="toolbar-title">IDD Personalization Tool</h1>
+        <div className="toolbar-actions">
+          {isDirty && (
+            <>
+              <span className="dirty-badge">● Niezapisane zmiany</span>
+              <button className="btn btn-ghost btn-sm" onClick={resetToOriginal}>
+                Resetuj
+              </button>
+            </>
+          )}
+          <button className="btn btn-secondary" onClick={() => setShowImport(true)}>
+            Wczytaj JSON
+          </button>
+          <button className="btn btn-primary" disabled>
+            Pobierz JSON
+          </button>
+        </div>
       </header>
-      <main className="main-content">
-        {formData ? (
-          <p>
-            Załadowano schemat: <strong>{formData._meta.title}</strong>
-            {' · '}
-            {formData.fields.length} pól
-          </p>
-        ) : (
-          <p>Ładowanie schematu...</p>
-        )}
-      </main>
+
+      <div className="workspace">
+        {/* Left toolbox — placeholder, will be built in Zadanie 4 */}
+        <aside className="toolbox">
+          <div className="toolbox-header">Elementy</div>
+          <div className="toolbox-placeholder">
+            <p>Edytor drag&amp;drop</p>
+            <p className="toolbox-note">dostępny w kolejnym zadaniu</p>
+          </div>
+        </aside>
+
+        {/* Main form canvas */}
+        <main className="canvas">
+          <div className="canvas-meta">
+            <span className="meta-label">Schemat:</span>
+            <span className="meta-value">{siteId}</span>
+          </div>
+          <FormRenderer formData={formData} />
+        </main>
+      </div>
+
+      {showImport && (
+        <JsonImport onLoad={loadForm} onClose={() => setShowImport(false)} />
+      )}
     </div>
   )
 }
-
-export default App
