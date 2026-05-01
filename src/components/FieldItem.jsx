@@ -1,12 +1,13 @@
-// Renders a single IDD field in read-only mode based on its type.
-// In Zadanie 3 the title will become a TextEditor (click-to-edit).
+import { fieldLabel, optionLabel } from '../utils/translate'
+
 export default function FieldItem({ field }) {
-  const { type, title, options } = field
+  const { type } = field
+  const label = fieldLabel(field)
 
   if (type === 'heading') {
     return (
       <div className="field-heading">
-        <span>{title}</span>
+        <span>{label}</span>
       </div>
     )
   }
@@ -15,7 +16,7 @@ export default function FieldItem({ field }) {
     return (
       <div className="field-boolean">
         <input type="checkbox" disabled />
-        <label>{title}</label>
+        <label>{label}</label>
       </div>
     )
   }
@@ -23,12 +24,12 @@ export default function FieldItem({ field }) {
   if (type === 'checkbox-group') {
     return (
       <div className="field-checkbox-group">
-        <div className="field-section-title">{title}</div>
+        <div className="field-section-title">{label}</div>
         <div className="field-options-grid">
-          {options.map((opt) => (
+          {field.options.map((opt) => (
             <label key={opt.value} className="field-option">
               <input type="checkbox" disabled />
-              <span>{opt.translationKey}</span>
+              <span>{optionLabel(opt)}</span>
             </label>
           ))}
         </div>
@@ -39,12 +40,12 @@ export default function FieldItem({ field }) {
   if (type === 'select') {
     return (
       <div className="field-row">
-        <label className="field-label">{title}</label>
+        <label className="field-label">{label}</label>
         <div className="field-options-inline">
-          {options.map((opt) => (
+          {field.options.map((opt) => (
             <label key={opt.value} className="field-option-inline">
               <input type="radio" disabled name={field.key} />
-              <span>{opt.translationKey}</span>
+              <span>{optionLabel(opt)}</span>
             </label>
           ))}
         </div>
@@ -54,9 +55,9 @@ export default function FieldItem({ field }) {
 
   if (type === 'textarea') {
     return (
-      <div className="field-row">
-        <label className="field-label">{title}</label>
-        <textarea className="field-textarea" disabled placeholder={title} rows={3} />
+      <div className="field-textarea-box">
+        <span className="field-textarea-label">{label.toUpperCase()}</span>
+        <textarea className="field-textarea-inner" disabled rows={3} />
       </div>
     )
   }
@@ -65,11 +66,11 @@ export default function FieldItem({ field }) {
     return null
   }
 
-  // text (default)
+  // text
   return (
     <div className="field-row">
-      <label className="field-label">{title}</label>
-      <input className="field-input" type="text" disabled placeholder={title} />
+      <label className="field-label">{label}</label>
+      <input className="field-input" type="text" disabled placeholder={label} />
     </div>
   )
 }
