@@ -1,0 +1,1626 @@
+{
+    "$id": "https://app.insly.com/api/v1/sites/schemes/configurations/poland/idd/idemubezpieczenia",
+    "type": "object",
+    "title": "IDD questionary form",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "required": [
+        "customer_data"
+    ],
+    "properties": {
+        "customer_data": {
+            "type": "object",
+            "required": [
+                "id",
+                "revision_id",
+                "name",
+                "pesel"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "revision_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pesel": {
+                    "type": "string"
+                }
+            }
+        },
+        "quote_id": {
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "policy_numbers": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "maxLength": 1024,
+                "pattern": "^[A-Za-z0-9/\\-\\s_]+$"
+            }
+        },
+        "status": {
+            "type": "integer"
+        },
+        "answers": {
+            "type": "object",
+            "if": {
+                "properties": {
+                    "refusal": {
+                        "const": false
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "otherIddRequirenment_comment",
+                    "nonAcceptableExclusions_comment",
+                    "searchingEsgProduct_comment"
+                ]
+            },
+            "properties": {
+                "refusal": {
+                    "priority": 0.5,
+                    "type": "boolean",
+                    "title": "Refusal",
+                    "default_value": true,
+                    "title_translation_key": "idd.refusal"
+                },
+                "car": {
+                    "priority": 1,
+                    "type": "array",
+                    "title": "Pojazd",
+                    "tag": "car",
+                    "title_translation_key": "idd.carSafre",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "mtplSafre",
+                            "cascoasoIdem",
+                            "assaccidentSafre",
+                            "tires",
+                            "borderSafre",
+                            "zkSafre",
+                            "cascoworkshoppartnerIdem",
+                            "asscrashSafre",
+                            "gap",
+                            "cascodiscprotacIdem",
+                            "accident",
+                            "cascoestimateSafre",
+                            "assEuSafre",
+                            "legalProtection",
+                            "discprotocIdem",
+                            "glass",
+                            "cascominioclIdem",
+                            "assPlSafre",
+                            "luggageSafre",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "mtplSafre": "idd.car.mtplSafre",
+                            "cascoasoIdem": "idd.car.cascoasoIdem",
+                            "asscrashSafre": "idd.car.asscrashSafre",
+                            "tires": "idd.car.tires",
+                            "borderSafre": "idd.car.borderSafre",
+                            "zkSafre": "idd.car.zkSafre",
+                            "cascoworkshoppartnerIdem": "idd.car.cascoworkshoppartnerIdem",
+                            "assaccidentSafre": "idd.car.assaccidentSafre",
+                            "gap": "idd.car.gap",
+                            "cascodiscprotacIdem": "idd.car.cascodiscprotacIdem",
+                            "accident": "idd.car.accident",
+                            "cascoestimateSafre": "idd.car.cascoestimateSafre",
+                            "assEuSafre": "idd.car.assEuSafre",
+                            "legalProtection": "idd.car.legalProtection",
+                            "discprotocIdem": "idd.car.discprotocIdem",
+                            "glass": "idd.car.glass",
+                            "cascominioclIdem": "idd.car.cascominioclIdem",
+                            "assPlSafre": "idd.car.assPlSafre",
+                            "luggageSafre": "idd.car.luggageSafre",
+                            "other": "idd.car.other"
+                        }
+                    }
+                },
+                "car_comment": {
+                    "priority": 1.1,
+                    "title": "carcomment",
+                    "type": "string",
+                    "maxLength": 1024,
+                    "title_translation_key": "idd.car_comment",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.car",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "property": {
+                    "priority": 2,
+                    "type": "array",
+                    "title": "Majątek",
+                    "tag": "property",
+                    "title_translation_key": "idd.propertySafre",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "flatSafre",
+                            "houseinconstructionSafre",
+                            "glasselIdem",
+                            "ozeIdem",
+                            "liabilityprivateSafre",
+                            "houseSafre",
+                            "summerhouseSafre",
+                            "floodSafre",
+                            "assistanceSafre",
+                            "liabilitytenantocIdem",
+                            "garageeconomIdem",
+                            "gardenogrodIdem",
+                            "vandalismSafre",
+                            "legalprotectSafre",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "flatSafre": "idd.property.flatSafre",
+                            "houseinconstructionSafre": "idd.property.houseinconstructionSafre",
+                            "glasselIdem": "idd.property.glasselIdem",
+                            "liabilityprivateSafre": "idd.property.liabilityprivateSafre",
+                            "houseSafre": "idd.property.houseSafre",
+                            "summerhouseSafre": "idd.property.summerhouseSafre",
+                            "floodSafre": "idd.property.floodSafre",
+                            "assistanceSafre": "idd.property.assistanceSafre",
+                            "liabilitytenantocIdem": "idd.property.liabilitytenantocIdem",
+                            "garageeconomIdem": "idd.property.garageeconomIdem",
+                            "gardenogrodIdem": "idd.property.gardenogrodIdem",
+                            "vandalismSafre": "idd.property.vandalismSafre",
+                            "legalprotectSafre": "idd.property.legalprotectSafre",
+                            "other": "idd.property.other",
+                            "ozeIdem": "idd.property.ozeIdem"
+                        }
+                    }
+                },
+                "property_comment": {
+                    "priority": 2.1,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.property_commentSafre",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.property",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "property_all_risk": {
+                    "priority": 2.5,
+                    "type": "array",
+                    "title": "All risk [z wyłączeniami wskazanymi w OWU]",
+                    "tag": "property_all_risk",
+                    "title_translation_key": "idd.property_all_riskSafre",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "buildingIdem",
+                            "equipmentIdem",
+                            "personalItemsIdem",
+                            "garageEcoIdem",
+                            "gardenIdem",
+                            "inneIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "buildingIdem": "idd.coverage.item.buildingIdem",
+                            "equipmentIdem": "idd.coverage.item.equipmentIdem",
+                            "personalItemsIdem": "idd.coverage.item.personalItemsIdem",
+                            "garageEcoIdem": "idd.coverage.item.garageEcoIdem",
+                            "gardenIdem": "idd.coverage.item.gardenIdem",
+                            "inneIdem": "idd.coverage.item.inneIdem"
+                        }
+                    }
+                },
+                "property_all_risk_comment": {
+                    "priority": 2.51,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.property_all_risk_commentSafre",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.property_all_risk",
+                                "value": [
+                                    "inneIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "property_random_events": {
+                    "priority": 2.6,
+                    "type": "array",
+                    "title": "Zdarzenia losowe",
+                    "tag": "property_random_events",
+                    "title_translation_key": "idd.property_random_eventsSafre",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "buildingIdem",
+                            "equipmentIdem",
+                            "personalItemsIdem",
+                            "garageEcoIdem",
+                            "gardenIdem",
+                            "inneIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "buildingIdem": "idd.coverage.item.buildingIdem",
+                            "equipmentIdem": "idd.coverage.item.equipmentIdem",
+                            "personalItemsIdem": "idd.coverage.item.personalItemsIdem",
+                            "garageEcoIdem": "idd.coverage.item.garageEcoIdem",
+                            "gardenIdem": "idd.coverage.item.gardenIdem",
+                            "inneIdem": "idd.coverage.item.inneIdem"
+                        }
+                    }
+                },
+                "property_random_events_comment": {
+                    "priority": 2.61,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.property_random_events_commentSafre",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.property_random_events",
+                                "value": [
+                                    "inneIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "property_theft": {
+                    "priority": 2.7,
+                    "type": "array",
+                    "title": "Kradzież",
+                    "tag": "property_theft",
+                    "title_translation_key": "idd.property_theftSafre",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "buildingIdem",
+                            "equipmentIdem",
+                            "personalItemsIdem",
+                            "garageEcoIdem",
+                            "gardenIdem",
+                            "inneIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "buildingIdem": "idd.coverage.item.buildingIdem",
+                            "equipmentIdem": "idd.coverage.item.equipmentIdem",
+                            "personalItemsIdem": "idd.coverage.item.personalItemsIdem",
+                            "garageEcoIdem": "idd.coverage.item.garageEcoIdem",
+                            "gardenIdem": "idd.coverage.item.gardenIdem",
+                            "inneIdem": "idd.coverage.item.inneIdem"
+                        }
+                    }
+                },
+                "property_theft_comment": {
+                    "priority": 2.71,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.property_theft_commentSafre",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.property_theft",
+                                "value": [
+                                    "inneIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "travel": {
+                    "priority": 3,
+                    "type": "array",
+                    "title": "Podróż",
+                    "tag": "travel",
+                    "title_translation_key": "idd.travelSafre",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "polandSafre",
+                            "worldallIdem",
+                            "tplprivateSafre",
+                            "tourismIdem",
+                            "workSafre",
+                            "europe",
+                            "medicalExpenses",
+                            "accident",
+                            "sport",
+                            "cancellationfeeSafre",
+                            "worldexclIdem",
+                            "chronicillSafre",
+                            "luggage",
+                            "sportequipmentSafre",
+                            "countriesIdem",
+                            "sportDisciplinesIdem",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "polandSafre": "idd.travel.polandSafre",
+                            "worldallIdem": "idd.travel.worldallIdem",
+                            "tplprivateSafre": "idd.travel.tplprivateSafre",
+                            "tourismIdem": "idd.travel.tourismIdem",
+                            "workSafre": "idd.travel.workSafre",
+                            "europe": "idd.travel.europe",
+                            "medicalExpenses": "idd.travel.medicalExpenses",
+                            "accident": "idd.travel.accident",
+                            "sport": "idd.travel.sport",
+                            "cancellationfeeSafre": "idd.travel.cancellationfeeSafre",
+                            "worldexclIdem": "idd.travel.worldexclIdem",
+                            "chronicillSafre": "idd.travel.chronicillSafre",
+                            "luggage": "idd.travel.luggage",
+                            "sportequipmentSafre": "idd.travel.sportequipmentSafre",
+                            "other": "idd.travel.other",
+                            "countriesIdem": "idd.travel.countriesIdem",
+                            "sportDisciplinesIdem": "idd.travel.sportDisciplinesIdem"
+                        }
+                    }
+                },
+                "travel_countries_comment": {
+                    "priority": 3.05,
+                    "title": "Kraje",
+                    "type": "string",
+                    "title_translation_key": "idd.travel_countries_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.travel",
+                                "value": [
+                                    "countriesIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "travel_sports_comment": {
+                    "priority": 3.06,
+                    "title": "Dyscypliny sportowe",
+                    "type": "string",
+                    "title_translation_key": "idd.travel_sports_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.travel",
+                                "value": [
+                                    "sportDisciplinesIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "travel_comment": {
+                    "priority": 3.1,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.travel_commentSafre",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.travel",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "personal_heading": {
+                    "priority": 4,
+                    "type": "object",
+                    "title": "OSOBOWE",
+                    "title_translation_key": "idd.personal_heading"
+                },
+                "agricultural": {
+                    "priority": 5,
+                    "type": "array",
+                    "title": "Rolne",
+                    "tag": "agricultural",
+                    "title_translation_key": "idd.agriculturalSafre",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "farmover1haSafre",
+                            "farmerliabilitySafre",
+                            "budynkiIdem",
+                            "uprawyIdem",
+                            "zwierzetaIdem",
+                            "farmerpersonalliabilitySafre",
+                            "accidentSafre",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "farmover1haSafre": "idd.agricultural.farmover1haSafre",
+                            "farmerliabilitySafre": "idd.agricultural.farmerliabilitySafre",
+                            "budynkiIdem": "idd.agricultural.budynkiIdem",
+                            "uprawyIdem": "idd.agricultural.uprawyIdem",
+                            "zwierzetaIdem": "idd.agricultural.zwierzetaIdem",
+                            "farmerpersonalliabilitySafre": "idd.agricultural.farmerpersonalliabilitySafre",
+                            "accidentSafre": "idd.agricultural.accidentSafre",
+                            "other": "idd.agricultural.other"
+                        }
+                    }
+                },
+                "agricultural_comment": {
+                    "priority": 5.1,
+                    "title": " ",
+                    "type": "string",
+                    "maxLength": 1024,
+                    "title_translation_key": "idd.agricultural_commentSafre",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.agricultural",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "agri_voluntary_heading": {
+                    "priority": 5.45,
+                    "type": "object",
+                    "title": "Ubezpieczenia dobrowolne",
+                    "title_translation_key": "idd.agri_voluntary_headingIdem"
+                },
+                "agri_all_risk": {
+                    "priority": 5.5,
+                    "type": "array",
+                    "title": "All risk [z wyłączeniami wskazanymi w OWU]",
+                    "tag": "agri_all_risk",
+                    "title_translation_key": "idd.agri_all_riskSafre",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "buildings",
+                            "movable_property",
+                            "machinery",
+                            "livestock",
+                            "materials",
+                            "inneAgriIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "buildings": "idd.agri_coverage.item.buildings",
+                            "movable_property": "idd.agri_coverage.item.movable_property",
+                            "machinery": "idd.agri_coverage.item.machinery",
+                            "livestock": "idd.agri_coverage.item.livestock",
+                            "materials": "idd.agri_coverage.item.materials",
+                            "inneAgriIdem": "idd.agri_coverage.item.inneAgriIdem"
+                        }
+                    }
+                },
+                "agri_all_risk_comment": {
+                    "priority": 5.51,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.agri_all_risk_commentSafre",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.agri_all_risk",
+                                "value": [
+                                    "inneAgriIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "agri_random_events": {
+                    "priority": 5.6,
+                    "type": "array",
+                    "title": "Zdarzenia losowe",
+                    "tag": "agri_random_events",
+                    "title_translation_key": "idd.agri_random_eventsSafre",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "buildings",
+                            "movable_property",
+                            "machinery",
+                            "livestock",
+                            "materials",
+                            "inneAgriIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "buildings": "idd.agri_coverage.item.buildings",
+                            "movable_property": "idd.agri_coverage.item.movable_property",
+                            "machinery": "idd.agri_coverage.item.machinery",
+                            "livestock": "idd.agri_coverage.item.livestock",
+                            "materials": "idd.agri_coverage.item.materials",
+                            "inneAgriIdem": "idd.agri_coverage.item.inneAgriIdem"
+                        }
+                    }
+                },
+                "agri_random_events_comment": {
+                    "priority": 5.61,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.agri_random_events_commentSafre",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.agri_random_events",
+                                "value": [
+                                    "inneAgriIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "agri_theft": {
+                    "priority": 5.7,
+                    "type": "array",
+                    "title": "Kradzież",
+                    "tag": "agri_theft",
+                    "title_translation_key": "idd.agri_theftSafre",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "buildings",
+                            "movable_property",
+                            "machinery",
+                            "livestock",
+                            "materials",
+                            "inneAgriIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "buildings": "idd.agri_coverage.item.buildings",
+                            "movable_property": "idd.agri_coverage.item.movable_property",
+                            "machinery": "idd.agri_coverage.item.machinery",
+                            "livestock": "idd.agri_coverage.item.livestock",
+                            "materials": "idd.agri_coverage.item.materials",
+                            "inneAgriIdem": "idd.agri_coverage.item.inneAgriIdem"
+                        }
+                    }
+                },
+                "agri_theft_comment": {
+                    "priority": 5.71,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.agri_theft_commentSafre",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.agri_theft",
+                                "value": [
+                                    "inneAgriIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "life_individual_heading": {
+                    "priority": 6,
+                    "type": "object",
+                    "title": "UBEZPIECZENIA NA ŻYCIE I ZDROWIE",
+                    "title_translation_key": "idd.life_individual_headingIdem"
+                },
+                "life_individual": {
+                    "priority": 6.1,
+                    "type": "array",
+                    "title": "Indywidualne",
+                    "tag": "life_individual",
+                    "title_translation_key": "idd.life_individualIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "deathIdem",
+                            "seriousIllnessIdem",
+                            "treatmentAbroadIdem",
+                            "hospitalStayIdem",
+                            "savingsIdem",
+                            "deathAccidentIdem",
+                            "disabilityIdem",
+                            "healthDamageIdem",
+                            "surgeryIdem",
+                            "creditIdem",
+                            "otherIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "deathIdem": "idd.life_individual.deathIdem",
+                            "seriousIllnessIdem": "idd.life_individual.seriousIllnessIdem",
+                            "treatmentAbroadIdem": "idd.life_individual.treatmentAbroadIdem",
+                            "hospitalStayIdem": "idd.life_individual.hospitalStayIdem",
+                            "savingsIdem": "idd.life_individual.savingsIdem",
+                            "deathAccidentIdem": "idd.life_individual.deathAccidentIdem",
+                            "disabilityIdem": "idd.life_individual.disabilityIdem",
+                            "healthDamageIdem": "idd.life_individual.healthDamageIdem",
+                            "surgeryIdem": "idd.life_individual.surgeryIdem",
+                            "creditIdem": "idd.life_individual.creditIdem",
+                            "otherIdem": "idd.life_individual.otherIdem"
+                        }
+                    }
+                },
+                "life_individual_comment": {
+                    "priority": 6.11,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.life_individual_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.life_individual",
+                                "value": [
+                                    "otherIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "life_group_individual_heading": {
+                    "priority": 6.2,
+                    "type": "object",
+                    "title": "GRUPOWE INDYWIDUALNE",
+                    "title_translation_key": "idd.life_group_individual_headingIdem"
+                },
+                "life_group_individual_package": {
+                    "priority": 6.21,
+                    "type": "array",
+                    "title": "Rodzaj pakietu",
+                    "tag": "life_group_individual_package",
+                    "title_translation_key": "idd.life_group_individual_packageIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "forMeIdem",
+                            "forMeAndSpouseIdem",
+                            "forSeniorIdem",
+                            "forMeAndChildIdem",
+                            "forFamilyIdem",
+                            "treatmentAbroadGrIdem",
+                            "assistanceGrIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "forMeIdem": "idd.life_group_pkg.forMeIdem",
+                            "forMeAndSpouseIdem": "idd.life_group_pkg.forMeAndSpouseIdem",
+                            "forSeniorIdem": "idd.life_group_pkg.forSeniorIdem",
+                            "forMeAndChildIdem": "idd.life_group_pkg.forMeAndChildIdem",
+                            "forFamilyIdem": "idd.life_group_pkg.forFamilyIdem",
+                            "treatmentAbroadGrIdem": "idd.life_group_pkg.treatmentAbroadGrIdem",
+                            "assistanceGrIdem": "idd.life_group_pkg.assistanceGrIdem"
+                        }
+                    }
+                },
+                "life_group_individual_benefits": {
+                    "priority": 6.22,
+                    "type": "array",
+                    "title": "Świadczenia",
+                    "tag": "life_group_individual_benefits",
+                    "title_translation_key": "idd.life_group_individual_benefitsIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "deathIdem",
+                            "healthDamageIdem",
+                            "seriousIllnessIdem",
+                            "surgeryIdem",
+                            "hospitalStayIdem",
+                            "spouseDeathIdem",
+                            "spouseSeriousIllnessIdem",
+                            "spouseHealthDamageIdem",
+                            "parentsDeathIdem",
+                            "childBirthIdem",
+                            "otherIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "deathIdem": "idd.life_group_ben.deathIdem",
+                            "healthDamageIdem": "idd.life_group_ben.healthDamageIdem",
+                            "seriousIllnessIdem": "idd.life_group_ben.seriousIllnessIdem",
+                            "surgeryIdem": "idd.life_group_ben.surgeryIdem",
+                            "hospitalStayIdem": "idd.life_group_ben.hospitalStayIdem",
+                            "spouseDeathIdem": "idd.life_group_ben.spouseDeathIdem",
+                            "spouseSeriousIllnessIdem": "idd.life_group_ben.spouseSeriousIllnessIdem",
+                            "spouseHealthDamageIdem": "idd.life_group_ben.spouseHealthDamageIdem",
+                            "parentsDeathIdem": "idd.life_group_ben.parentsDeathIdem",
+                            "childBirthIdem": "idd.life_group_ben.childBirthIdem",
+                            "otherIdem": "idd.life_group_ben.otherIdem"
+                        }
+                    }
+                },
+                "life_group_individual_benefits_comment": {
+                    "priority": 6.23,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.life_group_individual_benefits_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.life_group_individual_benefits",
+                                "value": [
+                                    "otherIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "life_group_employees_heading": {
+                    "priority": 6.3,
+                    "type": "object",
+                    "title": "GRUPOWE DLA PRACOWNIKÓW",
+                    "title_translation_key": "idd.life_group_employees_headingIdem"
+                },
+                "life_group_employees_who": {
+                    "priority": 6.31,
+                    "type": "array",
+                    "title": "Kto oprócz pracowników będzie ubezpieczony?",
+                    "tag": "life_group_employees_who",
+                    "title_translation_key": "idd.life_group_employees_whoIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "spousesIdem",
+                            "adultChildrenIdem",
+                            "parentsChildrenBenefitsIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "spousesIdem": "idd.life_group_emp_who.spousesIdem",
+                            "adultChildrenIdem": "idd.life_group_emp_who.adultChildrenIdem",
+                            "parentsChildrenBenefitsIdem": "idd.life_group_emp_who.parentsChildrenBenefitsIdem"
+                        }
+                    }
+                },
+                "life_group_employees_benefits": {
+                    "priority": 6.32,
+                    "type": "array",
+                    "title": "Świadczenia",
+                    "tag": "life_group_employees_benefits",
+                    "title_translation_key": "idd.life_group_employees_benefitsIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "deathIdem",
+                            "healthDamageIdem",
+                            "seriousIllnessIdem",
+                            "surgeryIdem",
+                            "hospitalStayIdem",
+                            "spouseDeathIdem",
+                            "spouseSeriousIllnessIdem",
+                            "spouseHealthDamageIdem",
+                            "parentsDeathIdem",
+                            "childBirthIdem",
+                            "otherIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "deathIdem": "idd.life_group_emp_ben.deathIdem",
+                            "healthDamageIdem": "idd.life_group_emp_ben.healthDamageIdem",
+                            "seriousIllnessIdem": "idd.life_group_emp_ben.seriousIllnessIdem",
+                            "surgeryIdem": "idd.life_group_emp_ben.surgeryIdem",
+                            "hospitalStayIdem": "idd.life_group_emp_ben.hospitalStayIdem",
+                            "spouseDeathIdem": "idd.life_group_emp_ben.spouseDeathIdem",
+                            "spouseSeriousIllnessIdem": "idd.life_group_emp_ben.spouseSeriousIllnessIdem",
+                            "spouseHealthDamageIdem": "idd.life_group_emp_ben.spouseHealthDamageIdem",
+                            "parentsDeathIdem": "idd.life_group_emp_ben.parentsDeathIdem",
+                            "childBirthIdem": "idd.life_group_emp_ben.childBirthIdem",
+                            "otherIdem": "idd.life_group_emp_ben.otherIdem"
+                        }
+                    }
+                },
+                "life_group_employees_benefits_comment": {
+                    "priority": 6.33,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.life_group_employees_benefits_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.life_group_employees_benefits",
+                                "value": [
+                                    "otherIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "life_group_employees_funding": {
+                    "priority": 6.34,
+                    "type": "array",
+                    "title": "Finansowanie składki",
+                    "tag": "life_group_employees_funding",
+                    "title_translation_key": "idd.life_group_employees_fundingIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "employerIdem",
+                            "employeeIdem",
+                            "employerAndEmployeeIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "employerIdem": "idd.life_group_emp_fund.employerIdem",
+                            "employeeIdem": "idd.life_group_emp_fund.employeeIdem",
+                            "employerAndEmployeeIdem": "idd.life_group_emp_fund.employerAndEmployeeIdem"
+                        }
+                    }
+                },
+                "company_heading": {
+                    "priority": 7,
+                    "type": "object",
+                    "title": "FIRMA",
+                    "title_translation_key": "idd.company_headingIdem"
+                },
+                "company_activity_heading": {
+                    "priority": 7.01,
+                    "type": "object",
+                    "title": "Działalność Klienta",
+                    "title_translation_key": "idd.company_activity_headingIdem"
+                },
+                "company_regon_nip": {
+                    "priority": 7.02,
+                    "title": "REGON i NIP",
+                    "type": "string",
+                    "title_translation_key": "idd.company_regon_nipIdem",
+                    "maxLength": 1024
+                },
+                "company_description": {
+                    "priority": 7.03,
+                    "title": "Opis",
+                    "type": "string",
+                    "title_translation_key": "idd.company_descriptionIdem",
+                    "maxLength": 1024
+                },
+                "company_pkd": {
+                    "priority": 7.04,
+                    "title": "PKD",
+                    "type": "string",
+                    "title_translation_key": "idd.company_pkdIdem",
+                    "maxLength": 1024
+                },
+                "company_turnover": {
+                    "priority": 7.05,
+                    "title": "Obrót",
+                    "type": "string",
+                    "title_translation_key": "idd.company_turnoverIdem",
+                    "maxLength": 1024
+                },
+                "company_employees": {
+                    "priority": 7.06,
+                    "title": "Liczba pracowników",
+                    "type": "string",
+                    "title_translation_key": "idd.company_employeesIdem",
+                    "maxLength": 1024
+                },
+                "company_car": {
+                    "priority": 7.1,
+                    "type": "array",
+                    "title": "Pojazd (Firma)",
+                    "tag": "company_car",
+                    "title_translation_key": "idd.company_carIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "mtplSafre",
+                            "cascoasoIdem",
+                            "assaccidentSafre",
+                            "tires",
+                            "borderSafre",
+                            "zkSafre",
+                            "cascoworkshoppartnerIdem",
+                            "asscrashSafre",
+                            "gap",
+                            "cascodiscprotacIdem",
+                            "accident",
+                            "cascoestimateSafre",
+                            "assEuSafre",
+                            "legalProtection",
+                            "discprotocIdem",
+                            "glass",
+                            "cascominioclIdem",
+                            "assPlSafre",
+                            "luggageSafre",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "mtplSafre": "idd.car.mtplSafre",
+                            "cascoasoIdem": "idd.car.cascoasoIdem",
+                            "asscrashSafre": "idd.car.asscrashSafre",
+                            "tires": "idd.car.tires",
+                            "borderSafre": "idd.car.borderSafre",
+                            "zkSafre": "idd.car.zkSafre",
+                            "cascoworkshoppartnerIdem": "idd.car.cascoworkshoppartnerIdem",
+                            "assaccidentSafre": "idd.car.assaccidentSafre",
+                            "gap": "idd.car.gap",
+                            "cascodiscprotacIdem": "idd.car.cascodiscprotacIdem",
+                            "accident": "idd.car.accident",
+                            "cascoestimateSafre": "idd.car.cascoestimateSafre",
+                            "assEuSafre": "idd.car.assEuSafre",
+                            "legalProtection": "idd.car.legalProtection",
+                            "discprotocIdem": "idd.car.discprotocIdem",
+                            "glass": "idd.car.glass",
+                            "cascominioclIdem": "idd.car.cascominioclIdem",
+                            "assPlSafre": "idd.car.assPlSafre",
+                            "luggageSafre": "idd.car.luggageSafre",
+                            "other": "idd.car.other"
+                        }
+                    }
+                },
+                "company_car_comment": {
+                    "priority": 7.11,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.company_car_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.company_car",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "company_transport": {
+                    "priority": 7.12,
+                    "type": "array",
+                    "title": "Transport",
+                    "tag": "company_transport",
+                    "title_translation_key": "idd.company_transportIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "ownGoodsIdem",
+                            "commercialGoodsIdem",
+                            "commercialPassengersIdem",
+                            "taxiIdem",
+                            "rentalIdem",
+                            "domesticIdem",
+                            "internationalIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "ownGoodsIdem": "idd.company_transport.ownGoodsIdem",
+                            "commercialGoodsIdem": "idd.company_transport.commercialGoodsIdem",
+                            "commercialPassengersIdem": "idd.company_transport.commercialPassengersIdem",
+                            "taxiIdem": "idd.company_transport.taxiIdem",
+                            "rentalIdem": "idd.company_transport.rentalIdem",
+                            "domesticIdem": "idd.company_transport.domesticIdem",
+                            "internationalIdem": "idd.company_transport.internationalIdem"
+                        }
+                    }
+                },
+                "company_property": {
+                    "priority": 7.2,
+                    "type": "array",
+                    "title": "Majątek (Firma)",
+                    "tag": "company_property",
+                    "title_translation_key": "idd.company_propertyIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "buildingsLocalsIdem",
+                            "electronicsIdem",
+                            "investmentCostsIdem",
+                            "cashValuesIdem",
+                            "nnwCompanyIdem",
+                            "machineryEquipmentIdem",
+                            "currentAssetsIdem",
+                            "thirdPartyPropertyIdem",
+                            "employeePropertyIdem",
+                            "assistanceCompanyIdem",
+                            "rentalPkdIdem",
+                            "otherIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "buildingsLocalsIdem": "idd.company_property.buildingsLocalsIdem",
+                            "electronicsIdem": "idd.company_property.electronicsIdem",
+                            "investmentCostsIdem": "idd.company_property.investmentCostsIdem",
+                            "cashValuesIdem": "idd.company_property.cashValuesIdem",
+                            "nnwCompanyIdem": "idd.company_property.nnwCompanyIdem",
+                            "machineryEquipmentIdem": "idd.company_property.machineryEquipmentIdem",
+                            "currentAssetsIdem": "idd.company_property.currentAssetsIdem",
+                            "thirdPartyPropertyIdem": "idd.company_property.thirdPartyPropertyIdem",
+                            "employeePropertyIdem": "idd.company_property.employeePropertyIdem",
+                            "assistanceCompanyIdem": "idd.company_property.assistanceCompanyIdem",
+                            "rentalPkdIdem": "idd.company_property.rentalPkdIdem",
+                            "otherIdem": "idd.company_property.otherIdem"
+                        }
+                    }
+                },
+                "company_property_rental_comment": {
+                    "priority": 7.21,
+                    "title": "Wynajem (PKD najemcy)",
+                    "type": "string",
+                    "title_translation_key": "idd.company_property_rental_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.company_property",
+                                "value": [
+                                    "rentalPkdIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "company_property_comment": {
+                    "priority": 7.22,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.company_property_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.company_property",
+                                "value": [
+                                    "otherIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "company_liability_heading": {
+                    "priority": 7.3,
+                    "type": "object",
+                    "title": "ODPOWIEDZIALNOŚĆ CYWILNA",
+                    "title_translation_key": "idd.company_liability_headingIdem"
+                },
+                "company_liability_business": {
+                    "priority": 7.31,
+                    "type": "array",
+                    "title": "OC Działalności gospodarczej",
+                    "tag": "company_liability_business",
+                    "title_translation_key": "idd.company_liability_businessIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "propertyLiabilityIdem",
+                            "plusBusinessActivityIdem",
+                            "plusProductServiceIdem",
+                            "realEstateRentalIdem",
+                            "movableRentalIdem",
+                            "worldAllLiabIdem",
+                            "worldExclLiabIdem",
+                            "polandLiabIdem",
+                            "processingRepairIdem",
+                            "storageCustodyIdem",
+                            "pureFinancialLossIdem",
+                            "otherIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "propertyLiabilityIdem": "idd.company_liab_bus.propertyLiabilityIdem",
+                            "plusBusinessActivityIdem": "idd.company_liab_bus.plusBusinessActivityIdem",
+                            "plusProductServiceIdem": "idd.company_liab_bus.plusProductServiceIdem",
+                            "realEstateRentalIdem": "idd.company_liab_bus.realEstateRentalIdem",
+                            "movableRentalIdem": "idd.company_liab_bus.movableRentalIdem",
+                            "worldAllLiabIdem": "idd.company_liab_bus.worldAllLiabIdem",
+                            "worldExclLiabIdem": "idd.company_liab_bus.worldExclLiabIdem",
+                            "polandLiabIdem": "idd.company_liab_bus.polandLiabIdem",
+                            "processingRepairIdem": "idd.company_liab_bus.processingRepairIdem",
+                            "storageCustodyIdem": "idd.company_liab_bus.storageCustodyIdem",
+                            "pureFinancialLossIdem": "idd.company_liab_bus.pureFinancialLossIdem",
+                            "otherIdem": "idd.company_liab_bus.otherIdem"
+                        }
+                    }
+                },
+                "company_liability_business_comment": {
+                    "priority": 7.32,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.company_liability_business_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.company_liability_business",
+                                "value": [
+                                    "otherIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "company_liability_profession": {
+                    "priority": 7.33,
+                    "type": "array",
+                    "title": "OC zawodowe",
+                    "tag": "company_liability_profession",
+                    "title_translation_key": "idd.company_liability_professionIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "professionCompanyIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "professionCompanyIdem": "idd.company_liab_prof.professionCompanyIdem"
+                        }
+                    }
+                },
+                "company_liability_profession_comment": {
+                    "priority": 7.34,
+                    "title": "Zawód",
+                    "type": "string",
+                    "title_translation_key": "idd.company_liability_profession_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.company_liability_profession",
+                                "value": [
+                                    "professionCompanyIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "company_liability_transport": {
+                    "priority": 7.35,
+                    "type": "array",
+                    "title": "Transportowe OCP i OCS",
+                    "tag": "company_liability_transport",
+                    "title_translation_key": "idd.company_liability_transportIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "polandTransIdem",
+                            "upTo35tIdem",
+                            "cabotageEuIdem",
+                            "cabotageDeIdem",
+                            "cabotageGbIdem",
+                            "worldTransIdem",
+                            "above35tIdem",
+                            "forwarderIdem",
+                            "otherIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "polandTransIdem": "idd.company_liab_trans.polandTransIdem",
+                            "upTo35tIdem": "idd.company_liab_trans.upTo35tIdem",
+                            "cabotageEuIdem": "idd.company_liab_trans.cabotageEuIdem",
+                            "cabotageDeIdem": "idd.company_liab_trans.cabotageDeIdem",
+                            "cabotageGbIdem": "idd.company_liab_trans.cabotageGbIdem",
+                            "worldTransIdem": "idd.company_liab_trans.worldTransIdem",
+                            "above35tIdem": "idd.company_liab_trans.above35tIdem",
+                            "forwarderIdem": "idd.company_liab_trans.forwarderIdem",
+                            "otherIdem": "idd.company_liab_trans.otherIdem"
+                        }
+                    }
+                },
+                "company_liability_transport_comment": {
+                    "priority": 7.36,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.company_liability_transport_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.company_liability_transport",
+                                "value": [
+                                    "otherIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "company_guarantees": {
+                    "priority": 7.4,
+                    "type": "array",
+                    "title": "Gwarancje",
+                    "tag": "company_guarantees",
+                    "title_translation_key": "idd.company_guaranteesIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "bidBondIdem",
+                            "performanceBondIdem",
+                            "rentalDepositIdem",
+                            "customsIdem",
+                            "environmentalIdem",
+                            "advanceReturnIdem",
+                            "defectsRemovalIdem",
+                            "touristIdem",
+                            "otherIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "bidBondIdem": "idd.company_guar.bidBondIdem",
+                            "performanceBondIdem": "idd.company_guar.performanceBondIdem",
+                            "rentalDepositIdem": "idd.company_guar.rentalDepositIdem",
+                            "customsIdem": "idd.company_guar.customsIdem",
+                            "environmentalIdem": "idd.company_guar.environmentalIdem",
+                            "advanceReturnIdem": "idd.company_guar.advanceReturnIdem",
+                            "defectsRemovalIdem": "idd.company_guar.defectsRemovalIdem",
+                            "touristIdem": "idd.company_guar.touristIdem",
+                            "otherIdem": "idd.company_guar.otherIdem"
+                        }
+                    }
+                },
+                "company_guarantees_comment": {
+                    "priority": 7.41,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.company_guarantees_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.company_guarantees",
+                                "value": [
+                                    "otherIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "company_cargo": {
+                    "priority": 7.5,
+                    "type": "array",
+                    "title": "Cargo",
+                    "tag": "company_cargo",
+                    "title_translation_key": "idd.company_cargoIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "domesticCargoIdem",
+                            "singleCargoIdem",
+                            "roadCargoIdem",
+                            "airCargoIdem",
+                            "ownTransportCargoIdem",
+                            "internationalCargoIdem",
+                            "turnoverCargoIdem",
+                            "railCargoIdem",
+                            "inlandWaterwayCargoIdem",
+                            "externalTransportCargoIdem",
+                            "maritimeCargoIdem",
+                            "propertyTypeIdem",
+                            "otherIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "domesticCargoIdem": "idd.company_cargo.domesticCargoIdem",
+                            "singleCargoIdem": "idd.company_cargo.singleCargoIdem",
+                            "roadCargoIdem": "idd.company_cargo.roadCargoIdem",
+                            "airCargoIdem": "idd.company_cargo.airCargoIdem",
+                            "ownTransportCargoIdem": "idd.company_cargo.ownTransportCargoIdem",
+                            "internationalCargoIdem": "idd.company_cargo.internationalCargoIdem",
+                            "turnoverCargoIdem": "idd.company_cargo.turnoverCargoIdem",
+                            "railCargoIdem": "idd.company_cargo.railCargoIdem",
+                            "inlandWaterwayCargoIdem": "idd.company_cargo.inlandWaterwayCargoIdem",
+                            "externalTransportCargoIdem": "idd.company_cargo.externalTransportCargoIdem",
+                            "maritimeCargoIdem": "idd.company_cargo.maritimeCargoIdem",
+                            "propertyTypeIdem": "idd.company_cargo.propertyTypeIdem",
+                            "otherIdem": "idd.company_cargo.otherIdem"
+                        }
+                    }
+                },
+                "company_cargo_property_type_comment": {
+                    "priority": 7.51,
+                    "title": "Rodzaj mienia",
+                    "type": "string",
+                    "title_translation_key": "idd.company_cargo_property_type_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.company_cargo",
+                                "value": [
+                                    "propertyTypeIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "company_cargo_comment": {
+                    "priority": 7.52,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.company_cargo_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.company_cargo",
+                                "value": [
+                                    "otherIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "company_oze": {
+                    "priority": 7.6,
+                    "type": "array",
+                    "title": "OZE",
+                    "tag": "company_oze",
+                    "title_translation_key": "idd.company_ozeIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "photovoltaicInstallIdem",
+                            "heatPumpIdem",
+                            "solarInstallIdem",
+                            "photovoltaicFarmIdem",
+                            "otherIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "photovoltaicInstallIdem": "idd.company_oze.photovoltaicInstallIdem",
+                            "heatPumpIdem": "idd.company_oze.heatPumpIdem",
+                            "solarInstallIdem": "idd.company_oze.solarInstallIdem",
+                            "photovoltaicFarmIdem": "idd.company_oze.photovoltaicFarmIdem",
+                            "otherIdem": "idd.company_oze.otherIdem"
+                        }
+                    }
+                },
+                "company_oze_comment": {
+                    "priority": 7.61,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.company_oze_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.company_oze",
+                                "value": [
+                                    "otherIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "company_other": {
+                    "priority": 7.7,
+                    "type": "array",
+                    "title": "Pozostałe",
+                    "tag": "company_other",
+                    "title_translation_key": "idd.company_otherIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "aviationCrewedIdem",
+                            "aviationUncrewedIdem",
+                            "railwayIdem",
+                            "maritimeIdem",
+                            "cyberRiskIdem",
+                            "massEventLiabilityIdem",
+                            "dAndOIdem",
+                            "medicalProfLiabilityIdem",
+                            "medicalFacilityLiabilityIdem",
+                            "constructionMachineryIdem",
+                            "constructionAssemblyRiskIdem",
+                            "otherIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "aviationCrewedIdem": "idd.company_other.aviationCrewedIdem",
+                            "aviationUncrewedIdem": "idd.company_other.aviationUncrewedIdem",
+                            "railwayIdem": "idd.company_other.railwayIdem",
+                            "maritimeIdem": "idd.company_other.maritimeIdem",
+                            "cyberRiskIdem": "idd.company_other.cyberRiskIdem",
+                            "massEventLiabilityIdem": "idd.company_other.massEventLiabilityIdem",
+                            "dAndOIdem": "idd.company_other.dAndOIdem",
+                            "medicalProfLiabilityIdem": "idd.company_other.medicalProfLiabilityIdem",
+                            "medicalFacilityLiabilityIdem": "idd.company_other.medicalFacilityLiabilityIdem",
+                            "constructionMachineryIdem": "idd.company_other.constructionMachineryIdem",
+                            "constructionAssemblyRiskIdem": "idd.company_other.constructionAssemblyRiskIdem",
+                            "otherIdem": "idd.company_other.otherIdem"
+                        }
+                    }
+                },
+                "company_other_comment": {
+                    "priority": 7.71,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.company_other_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.company_other",
+                                "value": [
+                                    "otherIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "inthefuture": {
+                    "priority": 8,
+                    "type": "array",
+                    "title": "W przyszłości",
+                    "title_translation_key": "idd.inthefuture",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "car",
+                            "property",
+                            "travel",
+                            "lifeHealth",
+                            "agricultural",
+                            "company",
+                            "person",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "car": "idd.inthefuture.carSafre",
+                            "property": "idd.inthefuture.propertySafre",
+                            "travel": "idd.inthefuture.travel",
+                            "lifeHealth": "idd.inthefuture.lifeHealthIdem",
+                            "agricultural": "idd.inthefuture.agricultural",
+                            "company": "idd.inthefuture.companyIdem",
+                            "person": "idd.inthefuture.person",
+                            "other": "idd.inthefuture.other"
+                        }
+                    },
+                    "tag": "inthefuture"
+                },
+                "inthefuture_comment": {
+                    "title_translation_key": "idd.car.inthefuture_comment",
+                    "priority": 8.1,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.inthefuture",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": " ",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "agreementforemail": {
+                    "items": {
+                        "default_value": "yes",
+                        "enum": [
+                            "yes"
+                        ],
+                        "enum_translation_keys": {
+                            "yes": "idd.agreementforemail.yes"
+                        },
+                        "type": "string"
+                    },
+                    "priority": 8.8,
+                    "title": "Agreement for email",
+                    "title_translation_key": "idd.agreementforemail",
+                    "type": "array"
+                },
+                "otherIddRequirenment_comment": {
+                    "title_translation_key": "idd.otherIddRequirenment_comment",
+                    "priority": 9,
+                    "title": "Dodatkowe wymagania klienta dotyczące cech produktów",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "nonAcceptableExclusions_comment": {
+                    "title_translation_key": "idd.nonAcceptableExclusions_comment",
+                    "priority": 9.1,
+                    "title": "Nieakceptowalne wyłączenia zakresu odpowiedzialności",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "searchingEsgProduct_comment": {
+                    "title_translation_key": "idd.searchingEsgProduct_comment",
+                    "priority": 9.2,
+                    "title": "Istotne dla klienta następujące czynniki ESG",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "personal": {
+                    "priority": 4.1,
+                    "type": "array",
+                    "title": "Osobowe",
+                    "tag": "personal",
+                    "title_translation_key": "idd.personalIdem",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "mandatoryProfLiabIdem",
+                            "healthInsIdem",
+                            "privateLiabIdem",
+                            "tenantIdem",
+                            "landlordIdem",
+                            "voluntaryProfLiabIdem",
+                            "nnwIdem",
+                            "professionIdem",
+                            "sportIdem",
+                            "otherIdem"
+                        ],
+                        "enum_translation_keys": {
+                            "mandatoryProfLiabIdem": "idd.personal.mandatoryProfLiabIdem",
+                            "healthInsIdem": "idd.personal.healthInsIdem",
+                            "privateLiabIdem": "idd.personal.privateLiabIdem",
+                            "tenantIdem": "idd.personal.tenantIdem",
+                            "landlordIdem": "idd.personal.landlordIdem",
+                            "voluntaryProfLiabIdem": "idd.personal.voluntaryProfLiabIdem",
+                            "nnwIdem": "idd.personal.nnwIdem",
+                            "professionIdem": "idd.personal.professionIdem",
+                            "sportIdem": "idd.personal.sportIdem",
+                            "otherIdem": "idd.personal.otherIdem"
+                        }
+                    }
+                },
+                "personal_profession_comment": {
+                    "priority": 4.11,
+                    "title": "Zawód",
+                    "type": "string",
+                    "title_translation_key": "idd.personal_profession_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.personal",
+                                "value": [
+                                    "professionIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "personal_sport_comment": {
+                    "priority": 4.12,
+                    "title": "Sport",
+                    "type": "string",
+                    "title_translation_key": "idd.personal_sport_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.personal",
+                                "value": [
+                                    "sportIdem"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "personal_comment": {
+                    "priority": 4.13,
+                    "title": " ",
+                    "type": "string",
+                    "title_translation_key": "idd.personal_commentIdem",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.personal",
+                                "value": [
+                                    "otherIdem"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        "comment": {
+            "title_translation_key": "idd.comment",
+            "title": "Dodatkowe uwagi (niewidoczne dla klienta)",
+            "type": "string",
+            "maxLength": 1024
+        }
+    },
+    "description": "IDD questionary form"
+}

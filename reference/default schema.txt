@@ -1,0 +1,463 @@
+{
+    "$id": "https://app.insly.com/api/v1/sites/schemes/configurations/poland/idd/default",
+    "type": "object",
+    "title": "IDD questionary form",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "required": [
+        "customer_data"
+    ],
+    "properties": {
+        "customer_data": {
+            "type": "object",
+            "required": [
+                "id",
+                "revision_id",
+                "name",
+                "pesel"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "revision_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pesel": {
+                    "type": "string"
+                }
+            }
+        },
+        "quote_id": {
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "policy_numbers": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "maxLength": 1024,
+                "pattern": "^[A-Za-z0-9/\\-\\s_]+$"
+            }
+        },
+        "status": {
+            "type": "integer"
+        },
+        "answers": {
+            "type": "object",
+            "if": {
+                "properties": {
+                    "refusal": {
+                        "const": false
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "otherIddRequirenment_comment",
+                    "nonAcceptableExclusions_comment",
+                    "searchingEsgProduct_comment"
+                ]
+            },
+            "properties": {
+                "refusal": {
+                    "priority": 0.5,
+                    "type": "boolean",
+                    "title": "Refusal",
+                    "default_value": true,
+                    "title_translation_key": "idd.refusal"
+                },
+                "car": {
+                    "priority": 1,
+                    "type": "array",
+                    "title": "Car",
+                    "title_translation_key": "idd.car",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "mtpl",
+                            "casco",
+                            "assistance",
+                            "accident",
+                            "legalProtection",
+                            "tires",
+                            "glass",
+                            "gap",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "mtpl": "idd.car.mtpl",
+                            "casco": "idd.car.casco",
+                            "assistance": "idd.car.assistance",
+                            "accident": "idd.car.accident",
+                            "legalProtection": "idd.car.legalProtection",
+                            "tires": "idd.car.tires",
+                            "glass": "idd.car.glass",
+                            "gap": "idd.car.gap",
+                            "other": "idd.car.other"
+                        }
+                    }
+                },
+                "car_comment": {
+                    "priority": 1.1,
+                    "title_translation_key": "idd.car.car_comment",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.car",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "car comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "property": {
+                    "type": "array",
+                    "priority": 2,
+                    "title": "Property",
+                    "title_translation_key": "idd.property",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "fire",
+                            "bulgary",
+                            "allRisk",
+                            "tpl",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "fire": "idd.property.fire",
+                            "bulgary": "idd.property.bulgary",
+                            "allRisk": "idd.property.glass",
+                            "tpl": "idd.property.tpl",
+                            "other": "idd.property.other"
+                        }
+                    }
+                },
+                "property_comment": {
+                    "priority": 2.1,
+                    "title_translation_key": "idd.car.property_comment",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.property",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "property comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "travel": {
+                    "type": "array",
+                    "title": "Travel",
+                    "priority": 3,
+                    "title_translation_key": "idd.travel",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "europe",
+                            "world",
+                            "work",
+                            "travel",
+                            "sport",
+                            "medicalExpenses",
+                            "tpl",
+                            "accident",
+                            "assistance",
+                            "luggage",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "europe": "idd.travel.europe",
+                            "world": "idd.travel.world",
+                            "work": "idd.travel.work",
+                            "travel": "idd.travel.travel",
+                            "sport": "idd.travel.sport",
+                            "medicalExpenses": "idd.travel.medicalExpenses",
+                            "tpl": "idd.travel.tpl",
+                            "accident": "idd.travel.accident",
+                            "assistance": "idd.travel.assistance",
+                            "luggage": "idd.travel.luggage",
+                            "other": "idd.travel.other"
+                        }
+                    }
+                },
+                "travel_comment": {
+                    "title_translation_key": "idd.car.travel_comment",
+                    "priority": 3.1,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.travel",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "travel comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "life": {
+                    "priority": 4,
+                    "type": "array",
+                    "title": "Life",
+                    "title_translation_key": "idd.life",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "healthProtect",
+                            "health",
+                            "savings",
+                            "individual",
+                            "family",
+                            "group",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "healthProtect": "idd.life.healthProtect",
+                            "health": "idd.life.health",
+                            "individual": "idd.life.individual",
+                            "family": "idd.life.family",
+                            "savings": "idd.life.savings",
+                            "group": "idd. life.group",
+                            "other": "idd.life.other"
+                        }
+                    }
+                },
+                "life_comment": {
+                    "title_translation_key": "idd.car.life_comment",
+                    "priority": 4.1,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.life",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "life comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "agricultural": {
+                    "priority": 5,
+                    "type": "array",
+                    "title": "Agricultural",
+                    "title_translation_key": "idd.agricultural",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "tpl",
+                            "buildings",
+                            "property",
+                            "crops",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "tpl": "idd.agricultural.tpl",
+                            "buildings": "idd.agricultural.buildings",
+                            "property": "idd.agricultural.property",
+                            "crops": "idd.agricultural.crops",
+                            "other": "idd.agricultural.other"
+                        }
+                    }
+                },
+                "agricultural_comment": {
+                    "title_translation_key": "idd.car.agricultural_comment",
+                    "priority": 5.1,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.agricultural",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "agricultural comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "company": {
+                    "priority": 6,
+                    "type": "array",
+                    "title": "Company",
+                    "title_translation_key": "idd.company",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "fire",
+                            "theft",
+                            "allrisk",
+                            "tpl",
+                            "finance",
+                            "electronics",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "fire": "idd.company.fire",
+                            "theft": "idd.company.theft",
+                            "allrisk": "idd.company.allrisk",
+                            "tpl": "idd.company.tpl",
+                            "finance": "idd.company.finance",
+                            "electronics": "idd.company.electronics",
+                            "other": "iddd.company.other"
+                        }
+                    }
+                },
+                "company_comment": {
+                    "title_translation_key": "idd.car.company_comment",
+                    "priority": 6.1,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.company",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "agricultural comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "others": {
+                    "title_translation_key": "idd.others",
+                    "priority": 6.3,
+                    "title": "Others",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "disable_add": true
+                    }
+                },
+                "others_comment": {
+                    "title_translation_key": "idd.others_comment",
+                    "priority": 6.4,
+                    "title": "Others",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "inthefuture": {
+                    "priority": 7,
+                    "type": "array",
+                    "title": "In the Future",
+                    "title_translation_key": "idd.inthefuture",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "car",
+                            "property",
+                            "travel",
+                            "life",
+                            "agricultural",
+                            "company",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "car": "idd.inthefuture.car",
+                            "property": "idd.inthefuture.property",
+                            "travel": "idd.inthefuture.travel",
+                            "life": "idd.inthefuture.life",
+                            "agricultural": "idd.inthefuture.agricultural",
+                            "company": "idd.inthefuture.company",
+                            "other": "idd.inthefuture.other"
+                        }
+                    }
+                },
+                "inthefuture_comment": {
+                    "title_translation_key": "idd.car.inthefuture_comment",
+                    "priority": 7.1,
+                    "if": {
+                        "properties": {
+                            "answers.inthefuture": {
+                                "const": "other"
+                            }
+                        },
+                        "required": [
+                            "hasPet"
+                        ]
+                    },
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.inthefuture",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "agricultural comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "agreementforemail": {
+                    "items": {
+                        "default_value": "yes",
+                        "enum": [
+                            "yes"
+                        ],
+                        "enum_translation_keys": {
+                            "yes": "idd.agreementforemail.yes"
+                        },
+                        "type": "string"
+                    },
+                    "priority": 7.8,
+                    "title": "Agreement for email",
+                    "title_translation_key": "idd.agreementforemail",
+                    "type": "array"
+                },
+                "otherIddRequirenment_comment": {
+                    "title_translation_key": "idd.otherIddRequirenment_comment",
+                    "format": "textarea",
+                    "priority": 8,
+                    "title": "Other Idd requirenments",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "nonAcceptableExclusions_comment": {
+                    "title_translation_key": "idd.nonAcceptableExclusions_comment",
+                    "format": "textarea",
+                    "priority": 8.1,
+                    "title": "Non acceptable exclusions",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "searchingEsgProduct_comment": {
+                    "title_translation_key": "idd.searchingEsgProduct_comment",
+                    "format": "textarea",
+                    "priority": 8.2,
+                    "title": "Searching ESG Product",
+                    "type": "string",
+                    "maxLength": 1024
+                }
+            }
+        },
+        "comment": {
+            "title_translation_key": "idd.comment",
+            "title": "Comment",
+            "type": "string",
+            "maxLength": 1024
+        }
+    },
+    "description": "IDD questionary form"
+}

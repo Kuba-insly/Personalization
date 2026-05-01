@@ -1,0 +1,796 @@
+{
+    "$id": "https://app.insly.com/api/v1/sites/schemes/configurations/poland/idd/axioma",
+    "type": "object",
+    "title": "IDD questionary form",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "required": [
+        "customer_data"
+    ],
+    "properties": {
+        "customer_data": {
+            "type": "object",
+            "required": [
+                "id",
+                "revision_id",
+                "name",
+                "pesel"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "revision_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pesel": {
+                    "type": "string"
+                }
+            }
+        },
+        "quote_id": {
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "policy_numbers": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "maxLength": 1024,
+                "pattern": "^[A-Za-z0-9/\\-\\s_]+$"
+            }
+        },
+        "status": {
+            "type": "integer"
+        },
+        "answers": {
+            "type": "object",
+            "allOf": [
+                {
+                    "if": {
+                        "required": [
+                            "life_health"
+                        ],
+                        "properties": {
+                            "life_health": {
+                                "type": "array",
+                                "minItems": 1,
+                                "contains": {
+                                    "enum": [
+                                        "for_self",
+                                        "for_relatives",
+                                        "group_employees",
+                                        "death",
+                                        "illness",
+                                        "nnw",
+                                        "child_finance",
+                                        "medical_care",
+                                        "rehab",
+                                        "other"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": [
+                            "expositivePolitician",
+                            "expositivePoliticianCooperator",
+                            "expositivePoliticianFamiliy"
+                        ]
+                    }
+                }
+            ],
+            "properties": {
+                "refusal": {
+                    "priority": 0.5,
+                    "type": "boolean",
+                    "title": "Refusal",
+                    "default_value": true,
+                    "title_translation_key": "idd.refusal"
+                },
+                "motor": {
+                    "priority": 1,
+                    "type": "array",
+                    "title": "KOMUNIKACYJNE",
+                    "tag": "motor",
+                    "title_translation_key": "idd.axioma.motor",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "oc",
+                            "mini_casco",
+                            "ac",
+                            "nnw",
+                            "assistance",
+                            "glass",
+                            "oc_protection",
+                            "ac_protection",
+                            "tires",
+                            "legal_protection",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "oc": "idd.axioma.motor.oc",
+                            "mini_casco": "idd.axioma.motor.mini_casco",
+                            "ac": "idd.axioma.motor.ac",
+                            "nnw": "idd.axioma.motor.nnw",
+                            "assistance": "idd.axioma.motor.assistance",
+                            "glass": "idd.axioma.motor.glass",
+                            "oc_protection": "idd.axioma.motor.oc_protection",
+                            "ac_protection": "idd.axioma.motor.ac_protection",
+                            "tires": "idd.axioma.motor.tires",
+                            "legal_protection": "idd.axioma.motor.legal_protection",
+                            "other": "idd.axioma.motor.other"
+                        }
+                    }
+                },
+                "motor_comment": {
+                    "priority": 1.1,
+                    "title": "Inne (Komunikacyjne)",
+                    "type": "string",
+                    "maxLength": 1024,
+                    "title_translation_key": "idd.axioma.motor_comment",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.motor",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "property": {
+                    "priority": 2,
+                    "type": "array",
+                    "title": "MAJĄTKOWE",
+                    "tag": "property",
+                    "title_translation_key": "idd.axioma.property",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "house_flat",
+                            "fixtureselements",
+                            "moveableproperty",
+                            "garage",
+                            "structure",
+                            "tombstone",
+                            "fire_events",
+                            "all_risk",
+                            "theft",
+                            "assistance",
+                            "private_liability",
+                            "legal_protection",
+                            "nnw",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "house_flat": "idd.axioma.property.house_flat",
+                            "fixtureselements": "idd.axioma.property.fixtureelements",
+                            "moveableproperty": "idd.axioma.property.moveableproperty",
+                            "garage": "idd.axioma.property.garage",
+                            "structure": "idd.axioma.property.structure",
+                            "tombstone": "idd.axioma.property.tombstone",
+                            "fire_events": "idd.axioma.property.fire_events",
+                            "all_risk": "idd.axioma.property.all_risk",
+                            "theft": "idd.axioma.property.theft",
+                            "assistance": "idd.axioma.property.assistance",
+                            "private_liability": "idd.axioma.property.private_liability",
+                            "legal_protection": "idd.axioma.property.legal_protection",
+                            "nnw": "idd.axioma.property.nnw",
+                            "other": "idd.axioma.property.other"
+                        }
+                    }
+                },
+                "property_comment": {
+                    "priority": 2.1,
+                    "title": "Inne (Majątkowe)",
+                    "type": "string",
+                    "maxLength": 1024,
+                    "title_translation_key": "idd.axioma.property_comment",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.property",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "travel": {
+                    "priority": 3,
+                    "type": "array",
+                    "title": "PODRÓŻNE",
+                    "tag": "travel",
+                    "title_translation_key": "idd.axioma.travel",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "europe",
+                            "world",
+                            "medical_costs",
+                            "cancellation",
+                            "private_liability",
+                            "nnw",
+                            "luggage",
+                            "high_risk_work",
+                            "extreme_sports",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "europe": "idd.axioma.travel.europe",
+                            "world": "idd.axioma.travel.world",
+                            "medical_costs": "idd.axioma.travel.medical_costs",
+                            "cancellation": "idd.axioma.travel.cancellation",
+                            "private_liability": "idd.axioma.travel.private_liability",
+                            "nnw": "idd.axioma.travel.nnw",
+                            "luggage": "idd.axioma.travel.luggage",
+                            "high_risk_work": "idd.axioma.travel.high_risk_work",
+                            "extreme_sports": "idd.axioma.travel.extreme_sports",
+                            "other": "idd.axioma.travel.other"
+                        }
+                    }
+                },
+                "travel_comment": {
+                    "priority": 3.1,
+                    "title": "Inne (Podróżne)",
+                    "type": "string",
+                    "maxLength": 1024,
+                    "title_translation_key": "idd.axioma.travel_comment",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.travel",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "life_health": {
+                    "priority": 4,
+                    "type": "array",
+                    "title": "ŻYCIE I ZDROWIE",
+                    "tag": "life_health",
+                    "title_translation_key": "idd.axioma.life_health",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "for_self",
+                            "for_relatives",
+                            "group_employees",
+                            "death",
+                            "illness",
+                            "nnw",
+                            "child_finance",
+                            "medical_care",
+                            "rehab",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "for_self": "idd.axioma.life_health.for_self",
+                            "for_relatives": "idd.axioma.life_health.for_relatives",
+                            "group_employees": "idd.axioma.life_health.group_employees",
+                            "death": "idd.axioma.life_health.death",
+                            "illness": "idd.axioma.life_health.illness",
+                            "nnw": "idd.axioma.life_health.nnw",
+                            "child_finance": "idd.axioma.life_health.child_finance",
+                            "medical_care": "idd.axioma.life_health.medical_care",
+                            "rehab": "idd.axioma.life_health.rehab",
+                            "other": "idd.axioma.life_health.other"
+                        }
+                    }
+                },
+                "life_health_comment": {
+                    "priority": 4.1,
+                    "title": "Inne (Życie i Zdrowie)",
+                    "type": "string",
+                    "maxLength": 1024,
+                    "title_translation_key": "idd.axioma.life_health_comment",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.life_health",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "expositivePolitician": {
+                    "priority": 4.2,
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "uncheckable": true,
+                    "type": "string",
+                    "title": "Jestem osobą zajmującą eksponowane stanowisko polityczne",
+                    "field_type": "select",
+                    "default_value": "no",
+                    "enum_translation_keys": {
+                        "yes": "idd.expositivePolitician.yes",
+                        "no": "idd.expositivePolitician.no"
+                    },
+                    "title_translation_key": "idd.expositivePolitician",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.life_health",
+                                "value": [
+                                    "for_self",
+                                    "for_relatives",
+                                    "group_employees",
+                                    "death",
+                                    "illness",
+                                    "nnw",
+                                    "child_finance",
+                                    "medical_care",
+                                    "rehab",
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "expositivePoliticianCooperator": {
+                    "priority": 4.3,
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "uncheckable": true,
+                    "type": "string",
+                    "title": "Jestem osobą znaną jako bliski współpracownik osoby zajmującej eksponowane stanowisko polityczne",
+                    "field_type": "select",
+                    "default_value": "no",
+                    "enum_translation_keys": {
+                        "yes": "idd.expositivePoliticianCooperator.yes",
+                        "no": "idd.expositivePoliticianCooperator.no"
+                    },
+                    "title_translation_key": "idd.expositivePoliticianCooperator",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.life_health",
+                                "value": [
+                                    "for_self",
+                                    "for_relatives",
+                                    "group_employees",
+                                    "death",
+                                    "illness",
+                                    "nnw",
+                                    "child_finance",
+                                    "medical_care",
+                                    "rehab",
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "expositivePoliticianFamiliy": {
+                    "priority": 4.4,
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "uncheckable": true,
+                    "type": "string",
+                    "title": "Jestem członkiem rodziny osoby zajmującej eksponowane stanowisko polityczne",
+                    "field_type": "select",
+                    "default_value": "no",
+                    "enum_translation_keys": {
+                        "yes": "idd.expositivePoliticianFamiliy.yes",
+                        "no": "idd.expositivePoliticianFamiliy.no"
+                    },
+                    "title_translation_key": "idd.expositivePoliticianFamiliy",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.life_health",
+                                "value": [
+                                    "for_self",
+                                    "for_relatives",
+                                    "group_employees",
+                                    "death",
+                                    "illness",
+                                    "nnw",
+                                    "child_finance",
+                                    "medical_care",
+                                    "rehab",
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "personal": {
+                    "priority": 5,
+                    "type": "array",
+                    "title": "OSOBOWE",
+                    "tag": "personal",
+                    "title_translation_key": "idd.axioma.personal",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "nnw",
+                            "school_nnw",
+                            "private_liability",
+                            "legal_protection",
+                            "competitive_sports",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "nnw": "idd.axioma.personal.nnw",
+                            "school_nnw": "idd.axioma.personal.school_nnw",
+                            "private_liability": "idd.axioma.personal.private_liability",
+                            "legal_protection": "idd.axioma.personal.legal_protection",
+                            "competitive_sports": "idd.axioma.personal.competitive_sports",
+                            "other": "idd.axioma.personal.other"
+                        }
+                    }
+                },
+                "personal_comment": {
+                    "priority": 5.1,
+                    "title": "Inne (Osobowe)",
+                    "type": "string",
+                    "maxLength": 1024,
+                    "title_translation_key": "idd.axioma.personal_comment",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.personal",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "yacht": {
+                    "priority": 6,
+                    "type": "array",
+                    "title": "ŻEGLARSKIE",
+                    "tag": "yacht",
+                    "title_translation_key": "idd.axioma.yacht",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "skipper_oc",
+                            "yacht",
+                            "charter_package",
+                            "deposit",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "skipper_oc": "idd.axioma.yacht.skipper_oc",
+                            "yacht": "idd.axioma.yacht.yacht",
+                            "charter_package": "idd.axioma.yacht.charter_package",
+                            "deposit": "idd.axioma.yacht.deposit",
+                            "other": "idd.axioma.yacht.other"
+                        }
+                    }
+                },
+                "yacht_comment": {
+                    "priority": 6.1,
+                    "title": "Inne (Żeglarskie)",
+                    "type": "string",
+                    "maxLength": 1024,
+                    "title_translation_key": "idd.axioma.yacht_comment",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.yacht",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "agricultural": {
+                    "priority": 7,
+                    "type": "array",
+                    "title": "ROLNE",
+                    "tag": "agricultural",
+                    "title_translation_key": "idd.axioma.agricultural",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "oc",
+                            "property",
+                            "equipment",
+                            "crops",
+                            "animals",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "oc": "idd.axioma.agricultural.oc",
+                            "property": "idd.axioma.agricultural.property",
+                            "equipment": "idd.axioma.agricultural.equipment",
+                            "crops": "idd.axioma.agricultural.crops",
+                            "animals": "idd.axioma.agricultural.animals",
+                            "other": "idd.axioma.agricultural.other"
+                        }
+                    }
+                },
+                "agricultural_comment": {
+                    "priority": 7.1,
+                    "title": "Inne (Rolne)",
+                    "type": "string",
+                    "maxLength": 1024,
+                    "title_translation_key": "idd.axioma.agricultural_comment",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.agricultural",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "business": {
+                    "priority": 8,
+                    "type": "array",
+                    "title": "FIRMOWE I ZAWODOWE",
+                    "tag": "business",
+                    "title_translation_key": "idd.axioma.business",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "activity_oc",
+                            "property",
+                            "electronics",
+                            "machinery",
+                            "employee_nnw",
+                            "professional_oc",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "activity_oc": "idd.axioma.business.activity_oc",
+                            "property": "idd.axioma.business.property",
+                            "electronics": "idd.axioma.business.electronics",
+                            "machinery": "idd.axioma.business.machinery",
+                            "employee_nnw": "idd.axioma.business.employee_nnw",
+                            "professional_oc": "idd.axioma.business.professional_oc",
+                            "other": "idd.axioma.business.other"
+                        }
+                    }
+                },
+                "business_comment": {
+                    "priority": 8.1,
+                    "title": "Inne (Firmowe)",
+                    "type": "string",
+                    "maxLength": 1024,
+                    "title_translation_key": "idd.axioma.business_comment",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.business",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "fleet": {
+                    "priority": 9,
+                    "type": "array",
+                    "title": "FLOTOWE",
+                    "tag": "fleet",
+                    "title_translation_key": "idd.axioma.fleet",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "oc",
+                            "green_card",
+                            "ac",
+                            "nnw",
+                            "assistance",
+                            "glass",
+                            "legal_protection",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "oc": "idd.axioma.fleet.oc",
+                            "green_card": "idd.axioma.fleet.green_card",
+                            "ac": "idd.axioma.fleet.ac",
+                            "nnw": "idd.axioma.fleet.nnw",
+                            "assistance": "idd.axioma.fleet.assistance",
+                            "glass": "idd.axioma.fleet.glass",
+                            "legal_protection": "idd.axioma.fleet.legal_protection",
+                            "other": "idd.axioma.fleet.other"
+                        }
+                    }
+                },
+                "fleet_comment": {
+                    "priority": 9.1,
+                    "title": "Inne (Flotowe)",
+                    "type": "string",
+                    "maxLength": 1024,
+                    "title_translation_key": "idd.axioma.fleet_comment",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.fleet",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "transport": {
+                    "priority": 10,
+                    "type": "array",
+                    "title": "TRANSPORTOWE",
+                    "tag": "transport",
+                    "title_translation_key": "idd.axioma.transport",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "license_oc",
+                            "carrier_oc",
+                            "forwarder_oc",
+                            "cargo"
+                        ],
+                        "enum_translation_keys": {
+                            "license_oc": "idd.axioma.transport.license_oc",
+                            "carrier_oc": "idd.axioma.transport.carrier_oc",
+                            "forwarder_oc": "idd.axioma.transport.forwarder_oc",
+                            "cargo": "idd.axioma.transport.cargo"
+                        }
+                    }
+                },
+                "others": {
+                    "title_translation_key": "idd.axioma.others",
+                    "priority": 11,
+                    "title": "INNE",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "other": "idd.axioma.others.other_products"
+                        }
+                    }
+                },
+                "others_comment": {
+                    "title_translation_key": "idd.axioma.others_comment",
+                    "priority": 11.1,
+                    "title": "INNE PRODUKTY NIEUJĘTE W POWYŻSZYCH KATEGORIACH. CZEGO MAJĄ DOTYCZYĆ? CO MAJĄ CHRONIĆ?",
+                    "type": "string",
+                    "maxLength": 1024,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.others",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "inthefuture": {
+                    "priority": 11.3,
+                    "type": "array",
+                    "title": "W PRZYSZŁOŚCI",
+                    "title_translation_key": "idd.inthefuture",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "motor",
+                            "property",
+                            "travel",
+                            "life_health",
+                            "personal",
+                            "yacht",
+                            "agricultural",
+                            "business",
+                            "fleet",
+                            "transport",
+                            "others"
+                        ],
+                        "enum_translation_keys": {
+                            "motor": "idd.axioma.motor",
+                            "property": "idd.axioma.property",
+                            "travel": "idd.axioma.travel",
+                            "life_health": "idd.axioma.life_health",
+                            "personal": "idd.axioma.personal",
+                            "yacht": "idd.axioma.yacht",
+                            "agricultural": "idd.axioma.agricultural",
+                            "business": "idd.axioma.business",
+                            "fleet": "idd.axioma.fleet",
+                            "transport": "idd.axioma.transport",
+                            "others": "idd.axioma.others"
+                        }
+                    }
+                },
+                "inthefuture_comment": {
+                    "title_translation_key": "idd.inthefuture_comment",
+                    "priority": 11.4,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.inthefuture",
+                                "value": [
+                                    "others"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "Inne (W przyszłości)",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "agreements_section": {
+                    "priority": 11.2,
+                    "type": "object",
+                    "title": "pustepole",
+                    "title_translation_key": "idd.axioma.agreements_section"
+                },
+                "agreementforemail": {
+                    "items": {
+                        "default_value": "yes",
+                        "enum": [
+                            "yes"
+                        ],
+                        "enum_translation_keys": {
+                            "yes": "idd.agreementforemail.yes"
+                        },
+                        "type": "string"
+                    },
+                    "priority": 12,
+                    "title": "Agreement for email",
+                    "title_translation_key": "idd.agreementforemail",
+                    "type": "array"
+                },
+                "otherIddRequirenment_comment": {
+                    "title_translation_key": "idd.otherIddRequirenment_comment",
+                    "priority": 13,
+                    "title": "Other Idd requirenments",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "nonAcceptableExclusions_comment": {
+                    "title_translation_key": "idd.nonAcceptableExclusions_comment",
+                    "priority": 13.1,
+                    "title": "Non acceptable exclusions",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "searchingEsgProduct_comment": {
+                    "title_translation_key": "idd.searchingEsgProduct_comment",
+                    "priority": 13.2,
+                    "title": "Searching ESG Product",
+                    "type": "string",
+                    "maxLength": 1024
+                }
+            }
+        },
+        "comment": {
+            "title_translation_key": "idd.comment",
+            "title": "Comment",
+            "type": "string",
+            "maxLength": 1024
+        }
+    },
+    "description": "IDD questionary form"
+}

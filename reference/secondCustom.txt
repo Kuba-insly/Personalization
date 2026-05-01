@@ -1,0 +1,1303 @@
+{
+    "$id": "https://app.insly.com/api/v1/sites/schemes/configurations/poland/idd/securusfinanse",
+    "type": "object",
+    "title": "IDD questionary form",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "required": [
+        "customer_data"
+    ],
+    "properties": {
+        "customer_data": {
+            "type": "object",
+            "required": [
+                "id",
+                "revision_id",
+                "name",
+                "pesel"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "revision_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pesel": {
+                    "type": "string"
+                }
+            }
+        },
+        "quote_id": {
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "policy_numbers": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "maxLength": 1024,
+                "pattern": "^[A-Za-z0-9/\\-\\s_]+$"
+            }
+        },
+        "status": {
+            "type": "integer"
+        },
+        "answers": {
+            "type": "object",
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "refusal": {
+                                "const": true
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": [
+                            "otherIddRequirenment_comment",
+                            "nonAcceptableExclusions_comment"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "car": {
+                                "type": "array",
+                                "contains": {
+                                    "enum": [
+                                        "mtpl",
+                                        "casco",
+                                        "assistance",
+                                        "accident",
+                                        "tires",
+                                        "glass",
+                                        "other"
+                                    ]
+                                }
+                            }
+                        },
+                        "required": [
+                            "car"
+                        ]
+                    },
+                    "then": {
+                        "required": [
+                            "car_nrregistration",
+                            "car_jdg"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "property": {
+                                "type": "array",
+                                "contains": {
+                                    "enum": [
+                                        "home",
+                                        "apart",
+                                        "diff",
+                                        "bulgary",
+                                        "tplSecurusFinanse",
+                                        "movablePropertySecurusFinanse",
+                                        "littleArchSecurusFinanse",
+                                        "photovoltaicsSecurusFinanse",
+                                        "tombstoneSecurusFinanse",
+                                        "other"
+                                    ]
+                                }
+                            }
+                        },
+                        "required": [
+                            "property"
+                        ]
+                    },
+                    "then": {
+                        "required": [
+                            "property_propertyAddress"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "photovoltaicsSecurusFinanse": {
+                                "type": "array",
+                                "contains": {
+                                    "enum": [
+                                        "fotovoltaicsSecurusFinanse"
+                                    ]
+                                }
+                            }
+                        },
+                        "required": [
+                            "photovoltaicsSecurusFinanse"
+                        ]
+                    },
+                    "then": {
+                        "required": [
+                            "property_photovoltaicsSecurusFinanse"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "travel": {
+                                "type": "array",
+                                "contains": {
+                                    "enum": [
+                                        "work",
+                                        "travel",
+                                        "sport",
+                                        "tpl",
+                                        "accident",
+                                        "luggage",
+                                        "cancellationCostsSecurusFinanse",
+                                        "klAssSecurusFinanse",
+                                        "other"
+                                    ]
+                                }
+                            }
+                        },
+                        "required": [
+                            "travel"
+                        ]
+                    },
+                    "then": {
+                        "required": [
+                            "travel_destination",
+                            "travel_date"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "tplprof": {
+                                "type": "array",
+                                "contains": {
+                                    "enum": [
+                                        "mandatory",
+                                        "optional"
+                                    ]
+                                }
+                            }
+                        },
+                        "required": [
+                            "tplprof"
+                        ]
+                    },
+                    "then": {
+                        "required": [
+                            "proffesion"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "companySec": {
+                                "type": "array",
+                                "contains": {
+                                    "enum": [
+                                        "pkd"
+                                    ]
+                                }
+                            }
+                        },
+                        "required": [
+                            "pkdsec"
+                        ]
+                    },
+                    "then": {
+                        "required": [
+                            "companySec"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "ocEntity": {
+                                "type": "array",
+                                "contains": {
+                                    "enum": [
+                                        "mandatory",
+                                        "optional"
+                                    ]
+                                }
+                            }
+                        },
+                        "required": [
+                            "additionalocEntity"
+                        ]
+                    },
+                    "then": {
+                        "required": [
+                            "ocEntity"
+                        ]
+                    }
+                }
+            ],
+            "properties": {
+                "refusal": {
+                    "priority": 0.5,
+                    "type": "boolean",
+                    "title": "Refusal",
+                    "default_value": true,
+                    "title_translation_key": "idd.refusal"
+                },
+                "car": {
+                    "priority": 1,
+                    "type": "array",
+                    "title": "Car",
+                    "title_translation_key": "idd.car",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "mtpl",
+                            "casco",
+                            "assistance",
+                            "accident",
+                            "tires",
+                            "glass",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "mtpl": "idd.car.mtpl",
+                            "casco": "idd.car.casco",
+                            "assistance": "idd.car.assistance",
+                            "accident": "idd.car.accident",
+                            "tires": "idd.car.tires",
+                            "glass": "idd.car.glass",
+                            "other": "idd.car.other"
+                        }
+                    }
+                },
+                "car_nrregistration": {
+                    "priority": 1.1,
+                    "title_translation_key": "idd.car.car_nrregistration",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.car",
+                                "value": [
+                                    "mtpl",
+                                    "casco",
+                                    "assistance",
+                                    "accident",
+                                    "tires",
+                                    "glass",
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "car comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "car_jdg": {
+                    "priority": 1.2,
+                    "title_translation_key": "idd.car.car_jdg",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.car",
+                                "value": [
+                                    "mtpl",
+                                    "casco",
+                                    "assistance",
+                                    "accident",
+                                    "tires",
+                                    "glass",
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "car comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "car_comment": {
+                    "priority": 1.3,
+                    "title_translation_key": "idd.car.car_comment",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.car",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "car comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "car_notes": {
+                    "priority": 1.4,
+                    "title_translation_key": "idd.car.notes",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.car",
+                                "value": [
+                                    "mtpl",
+                                    "casco",
+                                    "assistance",
+                                    "accident",
+                                    "tires",
+                                    "glass",
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "car notes",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "property": {
+                    "type": "array",
+                    "priority": 2,
+                    "title": "Property",
+                    "title_translation_key": "idd.property",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "home",
+                            "apart",
+                            "diff",
+                            "movablePropertySecurusFinanse",
+                            "tplSecurusFinanse",
+                            "littleArchSecurusFinanse",
+                            "photovoltaicsSecurusFinanse",
+                            "tombstoneSecurusFinanse",
+                            "bulgary",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "home": "idd.property.home",
+                            "apart": "idd.property.apart",
+                            "diff": "idd.property.diff",
+                            "movablePropertySecurusFinanse": "idd.property.movablePropertySecurusFinanse",
+                            "tplSecurusFinanse": "idd.property.tplSecurusFinanse",
+                            "littleArchSecurusFinanse": "idd.property.littleArchSecurusFinanse",
+                            "photovoltaicsSecurusFinanse": "idd.property.photovoltaicsSecurusFinanse",
+                            "tombstoneSecurusFinanse": "idd.property.tombstoneSecurusFinanse",
+                            "bulgary": "idd.property.bulgary",
+                            "other": "idd.property.other"
+                        }
+                    }
+                },
+                "property_diff": {
+                    "priority": 2.1,
+                    "title_translation_key": "idd.car.property_diff",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.property",
+                                "value": [
+                                    "diff"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "property comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "property_propertyAddress": {
+                    "priority": 2.11,
+                    "title_translation_key": "idd.car.property_propertyAddress",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.property",
+                                "value": [
+                                    "home",
+                                    "apart",
+                                    "diff",
+                                    "tplSecurusFinanse",
+                                    "movablePropertySecurusFinanse",
+                                    "littleArchSecurusFinanse",
+                                    "photovoltaicsSecurusFinanse",
+                                    "tombstoneSecurusFinanse",
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "property comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "property_comment": {
+                    "priority": 2.2,
+                    "title_translation_key": "idd.car.property_comment",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.property",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "property comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "property_notes": {
+                    "priority": 2.3,
+                    "title_translation_key": "idd.car.notes",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.property",
+                                "value": [
+                                    "home",
+                                    "apart",
+                                    "diff",
+                                    "tplSecurusFinanse",
+                                    "movablePropertySecurusFinanse",
+                                    "littleArchSecurusFinanse",
+                                    "photovoltaicsSecurusFinanse",
+                                    "tombstoneSecurusFinanse",
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "property notes",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "photovoltaicsSecurusFinanse": {
+                    "type": "array",
+                    "priority": 2.5,
+                    "title": "Property",
+                    "title_translation_key": "idd.photovoltaicsSecurusFinanse",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "fotovoltaicsSecurusFinanse"
+                        ],
+                        "enum_translation_keys": {
+                            "fotovoltaicsSecurusFinanse": "idd.photovoltaicsSecurusFinanse.fotovoltaicsSecurusFinanse"
+                        }
+                    }
+                },
+                "property_photovoltaicsSecurusFinanse": {
+                    "priority": 2.6,
+                    "title_translation_key": "idd.car.property_photovoltaicsSecurusFinanse",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.photovoltaicsSecurusFinanse",
+                                "value": [
+                                    "fotovoltaicsSecurusFinanse"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "photovoltaicsSecurusFinanse comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "photovoltaicsSecurusFinanse_notes": {
+                    "priority": 2.7,
+                    "title_translation_key": "idd.car.notes",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.photovoltaicsSecurusFinanse",
+                                "value": [
+                                    "fotovoltaicsSecurusFinanse"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "photovoltaicsSecurusFinanse notes",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "travel": {
+                    "type": "array",
+                    "title": "Travel",
+                    "priority": 3,
+                    "title_translation_key": "idd.travel",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "klAssSecurusFinanse",
+                            "accident",
+                            "tpl",
+                            "luggage",
+                            "cancellationCostsSecurusFinanse",
+                            "other",
+                            "work",
+                            "travel",
+                            "sport"
+                        ],
+                        "enum_translation_keys": {
+                            "klAssSecurusFinanse": "idd.travel.klAssSecurusFinanse",
+                            "accident": "idd.travel.accident",
+                            "tpl": "idd.travel.tpl",
+                            "luggage": "idd.travel.luggage",
+                            "cancellationCostsSecurusFinanse": "idd.travel.cancellationCostsSecurusFinanse",
+                            "other": "idd.travel.other",
+                            "work": "idd.travel.work",
+                            "travel": "idd.travel.travel",
+                            "sport": "idd.travel.sport"
+                        }
+                    }
+                },
+                "travel_destination": {
+                    "title_translation_key": "idd.car.travel_destination",
+                    "priority": 3.2,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.travel",
+                                "value": [
+                                    "work",
+                                    "travel",
+                                    "sport",
+                                    "tpl",
+                                    "accident",
+                                    "assistance",
+                                    "luggage",
+                                    "cancellationCostsSecurusFinanse",
+                                    "klAssSecurusFinanse",
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "travel comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "travel_date": {
+                    "title_translation_key": "idd.car.travel_date",
+                    "priority": 3.2,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.travel",
+                                "value": [
+                                    "work",
+                                    "travel",
+                                    "sport",
+                                    "tpl",
+                                    "accident",
+                                    "assistance",
+                                    "luggage",
+                                    "cancellationCostsSecurusFinanse",
+                                    "klAssSecurusFinanse",
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "travel comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "travel_comment": {
+                    "title_translation_key": "idd.car.travel_comment",
+                    "priority": 3.2,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.travel",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "travel comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "travel_notes": {
+                    "priority": 3.3,
+                    "title_translation_key": "idd.car.notes",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.travel",
+                                "value": [
+                                    "work",
+                                    "travel",
+                                    "sport",
+                                    "tpl",
+                                    "accident",
+                                    "assistance",
+                                    "luggage",
+                                    "cancellationCostsSecurusFinanse",
+                                    "klAssSecurusFinanse",
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "travel notes",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "agricultural": {
+                    "priority": 4,
+                    "type": "array",
+                    "title": "Agricultural",
+                    "title_translation_key": "idd.agricultural",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "tpl",
+                            "buildings",
+                            "propertySecurusFinanse",
+                            "crops",
+                            "accidentSecurusFinanse",
+                            "other"
+                        ],
+                        "enum_translation_keys": {
+                            "tpl": "idd.agricultural.tpl",
+                            "buildings": "idd.agricultural.buildings",
+                            "propertySecurusFinanse": "idd.agricultural.propertySecurusFinanse",
+                            "crops": "idd.agricultural.crops",
+                            "accidentSecurusFinanse": "idd.agricultural.accidentSecurusFinanse",
+                            "other": "idd.agricultural.other"
+                        }
+                    }
+                },
+                "agricultural_comment": {
+                    "title_translation_key": "idd.car.agricultural_comment",
+                    "priority": 4.1,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.agricultural",
+                                "value": [
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "agricultural comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "agricultural_notes": {
+                    "priority": 4.2,
+                    "title_translation_key": "idd.car.notes",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.agricultural",
+                                "value": [
+                                    "tpl",
+                                    "buildings",
+                                    "propertySecurusFinanse",
+                                    "crops",
+                                    "accidentSecurusFinanse",
+                                    "other"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "agricultural notes",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "tplInPrivate": {
+                    "priority": 4.5,
+                    "type": "array",
+                    "title": "TpltplInPrivate",
+                    "title_translation_key": "idd.tplInPrivate",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "tpl"
+                        ],
+                        "enum_translation_keys": {
+                            "tpl": "idd.tplInPrivate.tpl"
+                        }
+                    }
+                },
+                "tplInPrivate_notes": {
+                    "priority": 4.6,
+                    "title_translation_key": "idd.car.notes",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.tplInPrivate",
+                                "value": [
+                                    "tpl"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "tplInPrivate notes",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "accidentSecurusFinanse": {
+                    "priority": 4.6,
+                    "type": "array",
+                    "title": "accidentSecurusFinanse",
+                    "title_translation_key": "idd.accidentSecurusFinanse",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "groups",
+                            "individual"
+                        ],
+                        "enum_translation_keys": {
+                            "groups": "idd.accidentSecurusFinanse.groups",
+                            "individual": "idd.accidentSecurusFinanse.individual"
+                        }
+                    }
+                },
+                "accidentSecurusFinanse_notes": {
+                    "priority": 4.7,
+                    "title_translation_key": "idd.car.notes",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.accidentSecurusFinanse",
+                                "value": [
+                                    "groups",
+                                    "individual"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "accidentSecurusFinanse notes",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "tplprof": {
+                    "priority": 4.7,
+                    "type": "array",
+                    "title": "Tplprof",
+                    "title_translation_key": "idd.tplprof",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "mandatory",
+                            "optional"
+                        ],
+                        "enum_translation_keys": {
+                            "mandatory": "idd.tplprof.mandatory",
+                            "optional": "idd.tplprof.optional"
+                        }
+                    }
+                },
+                "proffesion": {
+                    "title_translation_key": "idd.car.proffesion",
+                    "priority": 4.8,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.tplprof",
+                                "value": [
+                                    "mandatory",
+                                    "optional"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "tplprof comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "tplprof_notes": {
+                    "priority": 4.9,
+                    "title_translation_key": "idd.car.notes",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.tplprof",
+                                "value": [
+                                    "mandatory",
+                                    "optional"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "tplprof notes",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "transporter": {
+                    "priority": 4.9,
+                    "type": "array",
+                    "title": "Transporter",
+                    "title_translation_key": "idd.transporter",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "ocpCountry",
+                            "ocpInternational",
+                            "cabotage",
+                            "ocForwarder",
+                            "ocTransporter"
+                        ],
+                        "enum_translation_keys": {
+                            "ocpCountry": "idd.transporter.ocpCountry",
+                            "ocpInternational": "idd.transporter.ocpInternational",
+                            "cabotage": "idd.transporter.cabotage",
+                            "ocForwarder": "idd.transporter.ocForwarder",
+                            "ocTransporter": "idd.transporter.ocTransporter"
+                        }
+                    }
+                },
+                "transporter_notes": {
+                    "priority": 4.91,
+                    "title_translation_key": "idd.car.notes",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.transporter",
+                                "value": [
+                                    "ocpCountry",
+                                    "ocpInternational",
+                                    "cabotage",
+                                    "ocForwarder",
+                                    "ocTransporter"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "transporter notes",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "companySec": {
+                    "priority": 5,
+                    "type": "array",
+                    "title": "CompanySec",
+                    "title_translation_key": "idd.companySec",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "pkd",
+                            "buildings",
+                            "machines",
+                            "invest",
+                            "property",
+                            "values",
+                            "electronics",
+                            "ocjdg",
+                            "accidentemployees",
+                            "cargo"
+                        ],
+                        "enum_translation_keys": {
+                            "pkd": "idd.companySec.pkd",
+                            "buildings": "idd.companySec.buildings",
+                            "machines": "idd.companySec.machines",
+                            "invest": "idd.companySec.invest",
+                            "property": "idd.companySec.property",
+                            "values": "idd.companySec.values",
+                            "electronics": "idd.companySec.electronics",
+                            "ocjdg": "idd.companySec.ocjdg",
+                            "accidentemployees": "idd.companySec.accidentemployees",
+                            "cargo": "idd.companySec.cargo"
+                        }
+                    }
+                },
+                "companySec_comment": {
+                    "title_translation_key": "idd.car.companySec_comment",
+                    "priority": 5.1,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.companySec",
+                                "value": [
+                                    "pkd",
+                                    "buildings",
+                                    "machines",
+                                    "property",
+                                    "values",
+                                    "electronics",
+                                    "ocjdg",
+                                    "accidentemployees",
+                                    "cargo"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "agricultural comment",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "pkdsec": {
+                    "title_translation_key": "idd.car.pkdsec",
+                    "priority": 5.11,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.companySec",
+                                "value": [
+                                    "pkd"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "agricultural comment",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "companySec_notes": {
+                    "priority": 5.12,
+                    "title_translation_key": "idd.car.notes",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.companySec",
+                                "value": [
+                                    "pkd",
+                                    "buildings",
+                                    "machines",
+                                    "property",
+                                    "values",
+                                    "electronics",
+                                    "ocjdg",
+                                    "accidentemployees",
+                                    "cargo"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "companySec notes",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "machines": {
+                    "priority": 5.2,
+                    "type": "array",
+                    "title": "Machines",
+                    "title_translation_key": "idd.machinesSec",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "machines"
+                        ],
+                        "enum_translation_keys": {
+                            "machines": "idd.machinesSec.machines"
+                        }
+                    }
+                },
+                "machines_comment": {
+                    "title_translation_key": "idd.car.machinesAgri_comment",
+                    "priority": 5.3,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.machines",
+                                "value": [
+                                    "machines"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "agricultural comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "machines_notes": {
+                    "priority": 5.35,
+                    "title_translation_key": "idd.car.notes",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.machines",
+                                "value": [
+                                    "machines"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "machines notes",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "ocEntity": {
+                    "priority": 5.4,
+                    "type": "array",
+                    "title": "ocEntity",
+                    "title_translation_key": "idd.ocEntity",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "mandatory",
+                            "optional"
+                        ],
+                        "enum_translation_keys": {
+                            "mandatory": "idd.ocEntity.mandatory",
+                            "optional": "idd.ocEntity.optional"
+                        }
+                    }
+                },
+                "additionalocEntity": {
+                    "title_translation_key": "idd.car.additionalocEntity",
+                    "priority": 5.5,
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.ocEntity",
+                                "value": [
+                                    "mandatory",
+                                    "optional"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "ocEntity comment",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "ocEntity_notes": {
+                    "priority": 5.55,
+                    "title_translation_key": "idd.car.notes",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.ocEntity",
+                                "value": [
+                                    "mandatory",
+                                    "optional"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "ocEntity notes",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "ocProvider": {
+                    "priority": 5.6,
+                    "type": "array",
+                    "title": "ocProvider",
+                    "title_translation_key": "idd.ocProvider",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "mandatory",
+                            "optional"
+                        ],
+                        "enum_translation_keys": {
+                            "mandatory": "idd.ocProvider.mandatory",
+                            "optional": "idd.ocProvider.optional"
+                        }
+                    }
+                },
+                "ocProvider_notes": {
+                    "priority": 5.65,
+                    "title_translation_key": "idd.car.notes",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.ocProvider",
+                                "value": [
+                                    "mandatory",
+                                    "optional"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "ocProvider notes",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "lifeSec": {
+                    "priority": 5.7,
+                    "type": "array",
+                    "title": "lifeSec",
+                    "title_translation_key": "idd.lifeSec",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "groupSec",
+                            "individualSec",
+                            "protectionSec",
+                            "investmentSec",
+                            "healthSec",
+                            "individualGetSec"
+                        ],
+                        "enum_translation_keys": {
+                            "groupSec": "idd.lifeSec.groupSec",
+                            "individualSec": "idd.lifeSec.individualSec",
+                            "protectionSec": "idd.lifeSec.protectionSec",
+                            "investmentSec": "idd.lifeSec.investmentSec",
+                            "healthSec": "idd.lifeSec.healthSec",
+                            "individualGetSec": "idd.lifeSec.individualGetSec"
+                        }
+                    }
+                },
+                "lifeSec_notes": {
+                    "priority": 5.75,
+                    "title_translation_key": "idd.car.notes",
+                    "show_if": {
+                        "fields": [
+                            {
+                                "name": "answers.lifeSec",
+                                "value": [
+                                    "groupSec",
+                                    "individualSec",
+                                    "protectionSec",
+                                    "investmentSec",
+                                    "healthSec",
+                                    "individualGetSec"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": "lifeSec notes",
+                    "type": "string",
+                    "maxLength": 3000
+                },
+                "others": {
+                    "title_translation_key": "idd.others",
+                    "priority": 6.3,
+                    "title": "Others",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "disable_add": true
+                    }
+                },
+                "others_comment": {
+                    "title_translation_key": "idd.others_comment",
+                    "priority": 6.4,
+                    "title": "Others",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "agreementfirst": {
+                    "items": {
+                        "default_value": "no",
+                        "enum": [
+                            "no"
+                        ],
+                        "enum_translation_keys": {
+                            "no": "idd.agreementsec.no"
+                        },
+                        "type": "string"
+                    },
+                    "priority": 7.9,
+                    "title": "Agreement for email",
+                    "title_translation_key": "idd.agreementfirst",
+                    "type": "array"
+                },
+                "agreementsecond": {
+                    "items": {
+                        "default_value": "no",
+                        "enum": [
+                            "no"
+                        ],
+                        "enum_translation_keys": {
+                            "no": "idd.agreementsec.no"
+                        },
+                        "type": "string"
+                    },
+                    "priority": 8,
+                    "title": "Agreement for email",
+                    "title_translation_key": "idd.agreementfirst",
+                    "type": "array"
+                },
+                "agreementthird": {
+                    "items": {
+                        "default_value": "no",
+                        "enum": [
+                            "no"
+                        ],
+                        "enum_translation_keys": {
+                            "no": "idd.agreementsec.no"
+                        },
+                        "type": "string"
+                    },
+                    "priority": 8.1,
+                    "title": "Agreement for email",
+                    "title_translation_key": "idd.agreementfirst",
+                    "type": "array"
+                },
+                "agreementfourth": {
+                    "items": {
+                        "default_value": "no",
+                        "enum": [
+                            "no"
+                        ],
+                        "enum_translation_keys": {
+                            "no": "idd.agreementsec.no"
+                        },
+                        "type": "string"
+                    },
+                    "priority": 8.2,
+                    "title": "Agreement for email",
+                    "title_translation_key": "idd.agreementfirst",
+                    "type": "array"
+                },
+                "agreementfifth": {
+                    "items": {
+                        "default_value": "no",
+                        "enum": [
+                            "no"
+                        ],
+                        "enum_translation_keys": {
+                            "no": "idd.agreementsec.no"
+                        },
+                        "type": "string"
+                    },
+                    "priority": 8.3,
+                    "title": "Agreement for email",
+                    "title_translation_key": "idd.agreementfirst",
+                    "type": "array"
+                },
+                "otherIddRequirenment_comment": {
+                    "title_translation_key": "idd.otherIddRequirenment_comment",
+                    "priority": 8.4,
+                    "title": "Other Idd requirenments",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "nonAcceptableExclusions_comment": {
+                    "title_translation_key": "idd.nonAcceptableExclusions_comment",
+                    "priority": 8.5,
+                    "title": "Non acceptable exclusions",
+                    "type": "string",
+                    "maxLength": 1024
+                },
+                "searchingEsgProduct_comment": {
+                    "title_translation_key": "idd.searchingEsgProduct_comment",
+                    "priority": 8.6,
+                    "title": "Searching ESG Product",
+                    "type": "string",
+                    "maxLength": 1024
+                }
+            }
+        },
+        "comment": {
+            "title_translation_key": "idd.comment",
+            "title": "Comment",
+            "type": "string",
+            "maxLength": 1024
+        }
+    },
+    "description": "IDD questionary form"
+}

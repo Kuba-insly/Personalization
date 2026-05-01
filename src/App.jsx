@@ -5,10 +5,11 @@ import JsonImport from './components/JsonImport'
 import './assets/styles.css'
 
 export default function App() {
-  const { formData, isDirty, loadForm, resetToOriginal } = useFormState()
+  const { formData, isDirty, loadForm, loadDefault, resetToLoaded } = useFormState()
   const [showImport, setShowImport] = useState(false)
 
   const siteId = formData?._meta?.$id?.split('/').pop() ?? 'default'
+  const isDefault = siteId === 'default'
 
   return (
     <div className="app">
@@ -18,10 +19,18 @@ export default function App() {
           {isDirty && (
             <>
               <span className="dirty-badge">● Niezapisane zmiany</span>
-              <button className="btn btn-ghost btn-sm" onClick={resetToOriginal}>
-                Resetuj
+              <button className="btn btn-ghost btn-sm" onClick={resetToLoaded}>
+                Cofnij zmiany
               </button>
             </>
+          )}
+          {!isDefault && (
+            <button className="btn btn-ghost btn-sm" onClick={() => {
+              if (isDirty && !confirm('Masz niezapisane zmiany. Czy chcesz wrócić do domyślnego schematu?')) return
+              loadDefault()
+            }}>
+              ↩ Wróć do default
+            </button>
           )}
           <button className="btn btn-secondary" onClick={() => setShowImport(true)}>
             Wczytaj JSON
@@ -47,6 +56,7 @@ export default function App() {
           <div className="canvas-meta">
             <span className="meta-label">Schemat:</span>
             <span className="meta-value">{siteId}</span>
+            {isDirty && <span className="meta-saved-note">· zmiany zapisane lokalnie</span>}
           </div>
           <FormRenderer formData={formData} />
         </main>

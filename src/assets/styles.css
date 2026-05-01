@@ -126,6 +126,10 @@ body {
   font-weight: 600;
   font-size: 11px;
 }
+.meta-saved-note {
+  color: #22c55e;
+  font-size: 11px;
+}
 
 /* ── Form Renderer ───────────────────────────────────── */
 .form-renderer {
@@ -294,14 +298,20 @@ body {
 }
 .field-textarea-inner {
   width: 100%;
-  border: none;
+  border: 1px solid #f0f2f5;
+  border-radius: 4px;
   outline: none;
   resize: none;
   font-size: 13px;
   color: #374151;
-  background: transparent;
-  min-height: 60px;
+  background: #f9fafb;
+  min-height: 64px;
+  padding: 6px 8px;
   font-family: inherit;
+}
+.field-textarea-inner:not(:disabled) {
+  background: white;
+  border-color: #d1d5db;
 }
 
 /* ── JSON Import Modal ───────────────────────────────── */
