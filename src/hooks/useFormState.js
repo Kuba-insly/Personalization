@@ -87,12 +87,46 @@ export function useFormState() {
     saveToStorage(currentRawRef.current, false)
   }
 
+  function addField(newField, beforeKey) {
+    setFormData((prev) => {
+      const fields = [...prev.fields]
+      const idx = beforeKey ? fields.findIndex((f) => f.key === beforeKey) : -1
+      fields.splice(idx === -1 ? fields.length : idx, 0, newField)
+      return { ...prev, fields }
+    })
+    setIsDirty(true)
+  }
+
+  function removeField(key) {
+    setFormData((prev) => ({
+      ...prev,
+      fields: prev.fields.filter((f) => f.key !== key),
+    }))
+    setIsDirty(true)
+  }
+
+  function moveField(fromKey, toKey) {
+    setFormData((prev) => {
+      const fields = [...prev.fields]
+      const from = fields.findIndex((f) => f.key === fromKey)
+      const to = fields.findIndex((f) => f.key === toKey)
+      if (from === -1 || to === -1 || from === to) return prev
+      const [item] = fields.splice(from, 1)
+      fields.splice(to, 0, item)
+      return { ...prev, fields }
+    })
+    setIsDirty(true)
+  }
+
   return {
     formData,
     isDirty,
     loadForm,
     loadDefault,
     updateField,
+    addField,
+    removeField,
+    moveField,
     resetToLoaded,
     currentRaw: currentRawRef.current,
   }

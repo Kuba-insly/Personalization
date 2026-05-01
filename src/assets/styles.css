@@ -314,6 +314,122 @@ body {
   border-color: #d1d5db;
 }
 
+/* ── Toolbox items ───────────────────────────────────── */
+.toolbox-items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 10px 0;
+}
+
+.toolbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  cursor: grab;
+  font-size: 12px;
+  color: #374151;
+  transition: background 0.1s, border-color 0.1s, box-shadow 0.1s;
+  user-select: none;
+}
+.toolbox-item:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  box-shadow: 0 1px 3px rgba(37,99,235,.1);
+}
+.toolbox-item:active { cursor: grabbing; }
+.toolbox-item--dragging { opacity: 0.4; }
+
+.toolbox-item-icon {
+  font-size: 14px;
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+  color: #6366f1;
+}
+.toolbox-item-label { font-size: 12px; font-weight: 500; }
+
+.toolbox-hint {
+  padding: 10px 12px;
+  font-size: 10px;
+  color: #94a3b8;
+  text-align: center;
+  line-height: 1.4;
+  margin-top: 8px;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* ── Sortable field item wrapper ─────────────────────── */
+.sortable-field-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.field-drag-handle {
+  flex-shrink: 0;
+  width: 18px;
+  padding-top: 12px;
+  cursor: grab;
+  color: #cbd5e1;
+  font-size: 15px;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.1s, color 0.1s;
+  user-select: none;
+}
+.field-drag-handle:active { cursor: grabbing; }
+.field-drag-handle--disabled { cursor: default; }
+.sortable-field-item:hover .field-drag-handle:not(.field-drag-handle--disabled) {
+  opacity: 1;
+}
+.field-drag-handle:hover { color: #6366f1; }
+
+.field-item-content { flex: 1; min-width: 0; }
+
+.field-remove-btn {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin-top: 9px;
+  border: none;
+  background: transparent;
+  color: #f87171;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.1s, background 0.1s;
+  padding: 0;
+}
+.field-remove-btn--hidden { visibility: hidden; }
+.sortable-field-item:hover .field-remove-btn:not(.field-remove-btn--hidden) { opacity: 1; }
+.field-remove-btn:hover { background: #fef2f2; color: #dc2626; }
+
+/* ── Drag overlay pill ───────────────────────────────── */
+.drag-overlay-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #1e293b;
+  color: white;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,.25);
+  pointer-events: none;
+}
+.drag-overlay-pill--toolbox { background: #4f46e5; }
+
 /* ── Program URL input (in canvas-meta bar) ──────────── */
 .program-url-input {
   border: 1px solid #cbd5e1;
