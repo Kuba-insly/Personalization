@@ -494,6 +494,16 @@ body {
   background: white;
 }
 .program-url-input::placeholder { color: #94a3b8; }
+.program-url-input--error {
+  border-color: #f87171;
+  background: #fff5f5;
+}
+.url-error-hint {
+  font-size: 11px;
+  color: #ef4444;
+  font-weight: 500;
+  white-space: nowrap;
+}
 
 /* ── Text Editor (click-to-edit) ─────────────────────── */
 .text-editor {

@@ -83,6 +83,7 @@ export default function App() {
   const [showImport, setShowImport] = useState(false)
   const [activeDrag, setActiveDrag] = useState(null) // { label, icon } for overlay
   const [exporting, setExporting] = useState(false)
+  const [urlError, setUrlError] = useState(false)
 
   const siteId = formData?._meta?.$id?.split('/').pop() ?? 'default'
   const isDefault = siteId === 'default'
@@ -94,6 +95,7 @@ export default function App() {
     setProgramUrl(raw)
     const match = raw.match(/https?:\/\/([^.]+)\.insly\./i)
     setSiteSlug(match ? match[1].toLowerCase() : '')
+    if (raw) setUrlError(false)
   }
 
   const sensors = useSensors(
@@ -128,9 +130,13 @@ export default function App() {
 
   async function handleExport() {
     if (!formData) return
+    if (!siteSlug) {
+      setUrlError(true)
+      return
+    }
     setExporting(true)
     try {
-      const { jsonStr, translationsStr, translationCount } = exportIdd(formData, siteSlug)
+      const { jsonStr, translationsStr } = exportIdd(formData, siteSlug)
       const zip = new JSZip()
       const date = new Date().toISOString().split('T')[0]
       zip.file('idd-schema.json', jsonStr)
@@ -141,13 +147,10 @@ export default function App() {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `idd-${siteSlug || 'export'}-${date}.zip`
+      a.download = `idd-${siteSlug}-${date}.zip`
       a.click()
       URL.revokeObjectURL(url)
       markSaved()
-      if (translationCount === 0) {
-        alert('ZIP pobrany. Brak nowych/zmienionych tłumaczeń — plik translations.txt nie został dodany.')
-      }
     } finally {
       setExporting(false)
     }
@@ -216,15 +219,16 @@ export default function App() {
               <span className="meta-value">{siteId}</span>
               <span className="meta-label" style={{ marginLeft: 12 }}>Link do programu:</span>
               <input
-                className="program-url-input"
+                className={`program-url-input${urlError ? ' program-url-input--error' : ''}`}
                 value={programUrl}
                 onChange={(e) => handleUrlChange(e.target.value)}
                 placeholder="https://nazwa.insly.pl"
                 title="Wklej link do programu Insly — subdomena zostanie użyta w kluczach tłumaczeń"
               />
-              {siteSlug && (
-                <span className="meta-value" title="Subdomena używana w kluczach tłumaczeń">{siteSlug}</span>
-              )}
+              {siteSlug
+                ? <span className="meta-value" title="Subdomena używana w kluczach tłumaczeń">{siteSlug}</span>
+                : urlError && <span className="url-error-hint">← Uzupełnij link do programu przed pobraniem</span>
+              }
             </div>
             <FormEditor
               formData={formData}

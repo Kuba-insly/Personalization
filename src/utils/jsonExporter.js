@@ -145,8 +145,17 @@ export function exportIdd(internalState, siteSlug = '') {
     ? { ...internalState.comment._originalField, title: internalState.comment.title }
     : raw.properties?.comment
 
+  // Replace the last segment of $id with siteSlug (e.g. /idd/default → /idd/piotrektest)
+  let updatedId = raw.$id
+  if (siteSlug && raw.$id) {
+    const parts = raw.$id.split('/')
+    parts[parts.length - 1] = siteSlug
+    updatedId = parts.join('/')
+  }
+
   const result = {
     ...raw,
+    $id: updatedId,
     properties: {
       ...raw.properties,
       answers: { ...raw.properties?.answers, properties: answersProperties },
