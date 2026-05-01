@@ -5,10 +5,18 @@ export default function TextEditor({ value, onSave, className = '' }) {
   const [draft, setDraft] = useState(value)
   const inputRef = useRef(null)
 
+  // Resize input to fit its content (scrollWidth trick)
+  function resizeInput(input) {
+    if (!input) return
+    input.style.width = '2px'
+    input.style.width = Math.max(80, Math.min(input.scrollWidth + 2, 700)) + 'px'
+  }
+
   useEffect(() => {
-    if (editing) {
-      inputRef.current?.focus()
-      inputRef.current?.select()
+    if (editing && inputRef.current) {
+      resizeInput(inputRef.current)
+      inputRef.current.focus()
+      inputRef.current.select()
     }
   }, [editing])
 
@@ -29,13 +37,18 @@ export default function TextEditor({ value, onSave, className = '' }) {
     if (e.key === 'Escape') setEditing(false)
   }
 
+  function handleChange(e) {
+    setDraft(e.target.value)
+    resizeInput(e.target)
+  }
+
   if (editing) {
     return (
       <input
         ref={inputRef}
         className={`text-editor-input ${className}`}
         value={draft}
-        onChange={(e) => setDraft(e.target.value)}
+        onChange={handleChange}
         onBlur={commit}
         onKeyDown={handleKeyDown}
         onClick={(e) => e.stopPropagation()}

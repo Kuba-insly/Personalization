@@ -530,7 +530,6 @@ body {
   color: inherit;
   outline: none;
   min-width: 80px;
-  max-width: 100%;
 }
 
 /* Orange variant for textarea labels */
