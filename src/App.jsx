@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import JSZip from 'jszip'
+import { exportIdd } from './utils/jsonExporter'
 import {
   DndContext,
   DragOverlay,
@@ -79,6 +81,7 @@ export default function App() {
 
   const [showImport, setShowImport] = useState(false)
   const [activeDrag, setActiveDrag] = useState(null) // { label, icon } for overlay
+  const [exporting, setExporting] = useState(false)
 
   const siteId = formData?._meta?.$id?.split('/').pop() ?? 'default'
   const isDefault = siteId === 'default'
@@ -122,6 +125,32 @@ export default function App() {
     setActiveDrag(null)
   }
 
+  async function handleExport() {
+    if (!formData) return
+    setExporting(true)
+    try {
+      const { jsonStr, translationsStr, translationCount } = exportIdd(formData, siteSlug)
+      const zip = new JSZip()
+      const date = new Date().toISOString().split('T')[0]
+      zip.file('idd-schema.json', jsonStr)
+      if (translationsStr) {
+        zip.file('translations.txt', translationsStr)
+      }
+      const blob = await zip.generateAsync({ type: 'blob' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `idd-${siteSlug || 'export'}-${date}.zip`
+      a.click()
+      URL.revokeObjectURL(url)
+      if (translationCount === 0) {
+        alert('ZIP pobrany. Brak nowych/zmienionych tłumaczeń — plik translations.txt nie został dodany.')
+      }
+    } finally {
+      setExporting(false)
+    }
+  }
+
   return (
     <DndContext
       sensors={sensors}
@@ -155,8 +184,8 @@ export default function App() {
             <button className="btn btn-secondary" onClick={() => setShowImport(true)}>
               Wczytaj JSON
             </button>
-            <button className="btn btn-primary" disabled>
-              Pobierz ZIP
+            <button className="btn btn-primary" onClick={handleExport} disabled={exporting || !formData}>
+              {exporting ? 'Pakuję…' : 'Pobierz ZIP'}
             </button>
           </div>
         </header>
@@ -187,7 +216,6 @@ export default function App() {
               {siteSlug && (
                 <span className="meta-value" title="Subdomena używana w kluczach tłumaczeń">{siteSlug}</span>
               )}
-              {isDirty && <span className="meta-saved-note">· zmiany zapisane lokalnie</span>}
             </div>
             <FormEditor
               formData={formData}
