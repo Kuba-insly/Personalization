@@ -208,6 +208,7 @@ body {
   cursor: default;
   padding: 3px 0;
   min-width: 0;
+  position: relative;
 }
 .field-option input[type="checkbox"] {
   width: 14px;
@@ -221,6 +222,44 @@ body {
   overflow-wrap: anywhere;
   line-height: 1.4;
 }
+
+/* Option controls (↑↓×) — shown on hover */
+.option-controls {
+  display: none;
+  position: absolute;
+  top: -1px;
+  right: -2px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.12);
+  z-index: 10;
+}
+.field-option--editable:hover .option-controls { display: flex; }
+.option-controls button {
+  padding: 2px 4px;
+  font-size: 10px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #64748b;
+  line-height: 1;
+}
+.option-controls button:hover:not(:disabled) { color: #1e293b; background: #f1f5f9; }
+.option-controls button:disabled { opacity: 0.25; cursor: default; }
+
+.btn-add-option {
+  margin-top: 8px;
+  padding: 3px 10px;
+  font-size: 11px;
+  color: #6366f1;
+  background: transparent;
+  border: 1px dashed #a5b4fc;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s;
+}
+.btn-add-option:hover { background: #eef2ff; border-color: #6366f1; }
 
 /* Text / textarea fields */
 .field-row {
