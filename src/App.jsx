@@ -11,9 +11,17 @@ export default function App() {
   const siteId = formData?._meta?.$id?.split('/').pop() ?? 'default'
   const isDefault = siteId === 'default'
 
-  // schemaName is the prefix used in translation keys during export.
-  // Pre-fill from the loaded JSON's $id when available.
-  const [schemaName, setSchemaName] = useState(isDefault ? '' : siteId)
+  // siteSlug is extracted from the Insly program URL, e.g.
+  // "https://piotrektest.insly.pl/idd" → "piotrektest"
+  // Used as suffix in translation keys: idd.car.piotrektestmtpl
+  const [programUrl, setProgramUrl] = useState('')
+  const [siteSlug, setSiteSlug] = useState('')
+
+  function handleUrlChange(raw) {
+    setProgramUrl(raw)
+    const match = raw.match(/https?:\/\/([^.]+)\.insly\./i)
+    setSiteSlug(match ? match[1].toLowerCase() : '')
+  }
 
   return (
     <div className="app">
@@ -61,14 +69,17 @@ export default function App() {
           <div className="canvas-meta">
             <span className="meta-label">Schemat:</span>
             <span className="meta-value">{siteId}</span>
-            <span className="meta-label" style={{ marginLeft: 12 }}>Nazwa dla kluczy:</span>
+            <span className="meta-label" style={{ marginLeft: 12 }}>Link do programu:</span>
             <input
-              className="schema-name-input"
-              value={schemaName}
-              onChange={(e) => setSchemaName(e.target.value)}
-              placeholder="np. pl_krs_auto"
-              title="Prefiks używany w kluczach tłumaczeń przy eksporcie"
+              className="program-url-input"
+              value={programUrl}
+              onChange={(e) => handleUrlChange(e.target.value)}
+              placeholder="https://nazwa.insly.pl/idd"
+              title="Wklej link do programu Insly — subdomena zostanie użyta w kluczach tłumaczeń"
             />
+            {siteSlug && (
+              <span className="meta-value" title="Subdomena używana w kluczach tłumaczeń">{siteSlug}</span>
+            )}
             {isDirty && <span className="meta-saved-note">· zmiany zapisane lokalnie</span>}
           </div>
           <FormRenderer formData={formData} onUpdateField={updateField} />

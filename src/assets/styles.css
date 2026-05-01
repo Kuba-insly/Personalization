@@ -314,23 +314,22 @@ body {
   border-color: #d1d5db;
 }
 
-/* ── Schema name input (in canvas-meta bar) ─────────── */
-.schema-name-input {
+/* ── Program URL input (in canvas-meta bar) ──────────── */
+.program-url-input {
   border: 1px solid #cbd5e1;
   border-radius: 4px;
   padding: 2px 8px;
   font-size: 11px;
-  font-weight: 600;
-  color: #3730a3;
-  background: #e0e7ff;
-  width: 140px;
+  color: #374151;
+  background: #f8fafc;
+  width: 220px;
   outline: none;
 }
-.schema-name-input:focus {
+.program-url-input:focus {
   border-color: #6366f1;
   background: white;
 }
-.schema-name-input::placeholder { color: #a5b4fc; font-weight: 400; }
+.program-url-input::placeholder { color: #94a3b8; }
 
 /* ── Text Editor (click-to-edit) ─────────────────────── */
 .text-editor {
