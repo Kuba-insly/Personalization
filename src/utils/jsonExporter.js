@@ -8,6 +8,18 @@ function slug(text) {
     .slice(0, 28)
 }
 
+// Builds a short English slug from a translated English text (used in new keys)
+const STOP_WORDS = new Set(['the','a','an','for','of','and','or','to','in','on','is','are','has','have','with','that','this','from','all','any','by'])
+function shortEngSlug(enText, maxLen = 22) {
+  if (!enText) return ''
+  return enText.toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '')
+    .split(/\s+/)
+    .filter(w => w.length > 1 && !STOP_WORDS.has(w))
+    .join('')
+    .slice(0, maxLen)
+}
+
 // Generates a new translation key by inserting siteSlug before the last segment
 // e.g. generateKey('idd.car.mtpl', 'piotrektest') → 'idd.car.piotrektestmtpl'
 function generateKey(originalKey, siteSlug) {
@@ -19,24 +31,27 @@ function generateKey(originalKey, siteSlug) {
   return `${prefix}.${s}${last}`
 }
 
-// Generates a key for a new or renamed option
-function optionKey(opt, siteSlug) {
+// Generates a key for a new option (no original key) using English slug
+function newOptionKey(opt, siteSlug, enMap) {
   const s = siteSlug || 'custom'
   if (!opt.translationKey) {
-    return `idd.custom.${s}${slug(opt.customLabel || opt.value)}`
+    const pl = opt.customLabel || opt.value
+    const en = enMap[pl] || ''
+    const suffix = shortEngSlug(en) || slug(pl)
+    return `idd.custom.${s}${suffix}`
   }
   return generateKey(opt.translationKey, siteSlug)
 }
 
 // Builds the schema object for a field that already existed in the original JSON
-function buildExistingField(field, priority, siteSlug, translations) {
+function buildExistingField(field, priority, siteSlug, translations, enMap) {
   const original = field._originalField ?? {}
 
   let titleKey = field.title_translation_key
 
   if (field._titleChanged) {
     titleKey = generateKey(field.title_translation_key, siteSlug)
-    translations.push({ key: titleKey, pl: field.title })
+    translations.push({ key: titleKey, pl: field.title, en: enMap[field.title] || '' })
   }
 
   const updated = { ...original, title: field.title, title_translation_key: titleKey, priority }
@@ -46,9 +61,11 @@ function buildExistingField(field, priority, siteSlug, translations) {
     const enumTranslationKeys = {}
     for (const opt of field.options) {
       if (opt.customLabel !== undefined) {
-        const newKey = optionKey(opt, siteSlug)
+        const newKey = opt.translationKey
+          ? generateKey(opt.translationKey, siteSlug)
+          : newOptionKey(opt, siteSlug, enMap)
         enumTranslationKeys[opt.value] = newKey
-        translations.push({ key: newKey, pl: opt.customLabel })
+        translations.push({ key: newKey, pl: opt.customLabel, en: enMap[opt.customLabel] || '' })
       } else {
         enumTranslationKeys[opt.value] = opt.translationKey
       }
@@ -61,9 +78,11 @@ function buildExistingField(field, priority, siteSlug, translations) {
     const enumTranslationKeys = {}
     for (const opt of field.options) {
       if (opt.customLabel !== undefined) {
-        const newKey = optionKey(opt, siteSlug)
+        const newKey = opt.translationKey
+          ? generateKey(opt.translationKey, siteSlug)
+          : newOptionKey(opt, siteSlug, enMap)
         enumTranslationKeys[opt.value] = newKey
-        translations.push({ key: newKey, pl: opt.customLabel })
+        translations.push({ key: newKey, pl: opt.customLabel, en: enMap[opt.customLabel] || '' })
       } else {
         enumTranslationKeys[opt.value] = opt.translationKey
       }
@@ -76,10 +95,12 @@ function buildExistingField(field, priority, siteSlug, translations) {
 }
 
 // Builds the schema object for a brand-new field created in the editor
-function buildNewField(field, priority, siteSlug, translations) {
+function buildNewField(field, priority, siteSlug, translations, enMap) {
   const s = siteSlug || 'custom'
-  const titleKey = `idd.custom.${s}${slug(field.title)}`
-  translations.push({ key: titleKey, pl: field.title })
+  const en = enMap[field.title] || ''
+  const keySuffix = shortEngSlug(en) || slug(field.title)
+  const titleKey = `idd.custom.${s}${keySuffix}`
+  translations.push({ key: titleKey, pl: field.title, en })
 
   const base = { title: field.title, title_translation_key: titleKey, priority }
 
@@ -96,9 +117,10 @@ function buildNewField(field, priority, siteSlug, translations) {
       const enumValues = field.options.map((o) => o.value)
       const enumTranslationKeys = {}
       for (const opt of field.options) {
-        const k = optionKey(opt, siteSlug)
+        const k = newOptionKey(opt, siteSlug, enMap)
         enumTranslationKeys[opt.value] = k
-        translations.push({ key: k, pl: opt.customLabel || opt.value })
+        const pl = opt.customLabel || opt.value
+        translations.push({ key: k, pl, en: enMap[pl] || '' })
       }
       return {
         ...base,
@@ -110,9 +132,10 @@ function buildNewField(field, priority, siteSlug, translations) {
       const enumValues = field.options.map((o) => o.value)
       const enumTranslationKeys = {}
       for (const opt of field.options) {
-        const k = optionKey(opt, siteSlug)
+        const k = newOptionKey(opt, siteSlug, enMap)
         enumTranslationKeys[opt.value] = k
-        translations.push({ key: k, pl: opt.customLabel || opt.value })
+        const pl = opt.customLabel || opt.value
+        translations.push({ key: k, pl, en: enMap[pl] || '' })
       }
       return { ...base, type: 'string', field_type: 'select', enum: enumValues, enum_translation_keys: enumTranslationKeys }
     }
@@ -127,7 +150,7 @@ function buildNewField(field, priority, siteSlug, translations) {
  *   translationsStr — translations.txt content (key | PL | EN) for new/changed keys only
  *   translationCount — how many new/changed keys were found
  */
-export function exportIdd(internalState, siteSlug = '') {
+export function exportIdd(internalState, siteSlug = '', enMap = {}) {
   const raw = internalState._raw
   const translations = []
 
@@ -135,9 +158,9 @@ export function exportIdd(internalState, siteSlug = '') {
   internalState.fields.forEach((field, idx) => {
     const priority = idx + 1
     if (field._isNew) {
-      answersProperties[field.key] = buildNewField(field, priority, siteSlug, translations)
+      answersProperties[field.key] = buildNewField(field, priority, siteSlug, translations, enMap)
     } else {
-      answersProperties[field.key] = buildExistingField(field, priority, siteSlug, translations)
+      answersProperties[field.key] = buildExistingField(field, priority, siteSlug, translations, enMap)
     }
   })
 
@@ -166,10 +189,11 @@ export function exportIdd(internalState, siteSlug = '') {
   const jsonStr = JSON.stringify(result, null, 4)
 
   // Deduplicate by key (last write wins)
+  // Deduplicate by key, build translations.txt lines: key | PL | EN
   const seen = new Map()
-  for (const t of translations) seen.set(t.key, t.pl)
+  for (const t of translations) seen.set(t.key, { pl: t.pl, en: t.en || '' })
   const translationsStr = seen.size > 0
-    ? [...seen.entries()].map(([k, pl]) => `${k} | ${pl} | `).join('\n')
+    ? [...seen.entries()].map(([k, { pl, en }]) => `${k} | ${pl} | ${en}`).join('\n')
     : ''
 
   return { jsonStr, translationsStr, translationCount: seen.size }

@@ -82,7 +82,7 @@ export default function App() {
 
   const [showImport, setShowImport] = useState(false)
   const [activeDrag, setActiveDrag] = useState(null) // { label, icon } for overlay
-  const [exporting, setExporting] = useState(false)
+  const [exportStep, setExportStep] = useState('') // '' | 'translating' | 'packing'
   const [urlError, setUrlError] = useState(false)
 
   const siteId = formData?._meta?.$id?.split('/').pop() ?? 'default'
@@ -128,15 +128,42 @@ export default function App() {
     setActiveDrag(null)
   }
 
+  async function translatePL(text) {
+    try {
+      const res = await fetch(
+        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=pl|en`
+      )
+      const data = await res.json()
+      if (data.responseStatus === 200) {
+        const t = data.responseData.translatedText || ''
+        // MyMemory returns "PLEASE SELECT..." when it can't translate
+        return t.startsWith('PLEASE SELECT') ? '' : t
+      }
+    } catch {}
+    return ''
+  }
+
   async function handleExport() {
     if (!formData) return
-    if (!siteSlug) {
-      setUrlError(true)
-      return
-    }
-    setExporting(true)
+    if (!siteSlug) { setUrlError(true); return }
+
     try {
-      const { jsonStr, translationsStr } = exportIdd(formData, siteSlug)
+      // Collect unique Polish labels that need translation
+      setExportStep('translating')
+      const toTranslate = new Set()
+      for (const field of formData.fields) {
+        if (field._isNew || field._titleChanged) toTranslate.add(field.title)
+        for (const opt of field.options || []) {
+          if (opt.customLabel !== undefined) toTranslate.add(opt.customLabel)
+        }
+      }
+
+      const labels = [...toTranslate]
+      const translated = await Promise.all(labels.map(translatePL))
+      const enMap = Object.fromEntries(labels.map((l, i) => [l, translated[i]]))
+
+      setExportStep('packing')
+      const { jsonStr, translationsStr } = exportIdd(formData, siteSlug, enMap)
       const zip = new JSZip()
       const date = new Date().toISOString().split('T')[0]
       zip.file('idd-schema.json', jsonStr)
@@ -152,7 +179,7 @@ export default function App() {
       URL.revokeObjectURL(url)
       markSaved()
     } finally {
-      setExporting(false)
+      setExportStep('')
     }
   }
 
@@ -196,8 +223,8 @@ export default function App() {
             <button className="btn btn-secondary" onClick={() => setShowImport(true)}>
               Wczytaj JSON
             </button>
-            <button className="btn btn-primary" onClick={handleExport} disabled={exporting || !formData}>
-              {exporting ? 'Pakuję…' : 'Pobierz ZIP'}
+            <button className="btn btn-primary" onClick={handleExport} disabled={!!exportStep || !formData}>
+              {exportStep === 'translating' ? 'Tłumaczę…' : exportStep === 'packing' ? 'Pakuję…' : 'Pobierz ZIP'}
             </button>
           </div>
         </header>
