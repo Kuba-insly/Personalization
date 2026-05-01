@@ -74,7 +74,7 @@ export default function App() {
               className="program-url-input"
               value={programUrl}
               onChange={(e) => handleUrlChange(e.target.value)}
-              placeholder="https://nazwa.insly.pl/idd"
+              placeholder="https://nazwa.insly.pl"
               title="Wklej link do programu Insly — subdomena zostanie użyta w kluczach tłumaczeń"
             />
             {siteSlug && (
