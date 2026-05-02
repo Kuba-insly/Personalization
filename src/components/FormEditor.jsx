@@ -2,20 +2,25 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import SortableFieldItem from './SortableFieldItem'
 import FieldItem from './FieldItem'
 
-export default function FormEditor({ formData, onUpdateField, onRemoveField }) {
+export default function FormEditor({ formData, onUpdateField, onRemoveField, view = 'full' }) {
   if (!formData) return null
 
-  const fieldIds = formData.fields.map((f) => f.key)
+  const visibleFields = view === 'refusal'
+    ? formData.fields.filter((f) => f.key === 'refusal' || f.key === 'agreementforemail')
+    : formData.fields
+
+  const fieldIds = visibleFields.map((f) => f.key)
 
   return (
     <div className="form-renderer">
       <SortableContext items={fieldIds} strategy={verticalListSortingStrategy}>
-        {formData.fields.map((field) => (
+        {visibleFields.map((field) => (
           <SortableFieldItem
             key={field.key}
             field={field}
             onUpdateField={onUpdateField}
-            onRemove={() => onRemoveField(field.key)}
+            onRemove={view !== 'refusal' ? () => onRemoveField(field.key) : undefined}
+            allFields={formData.fields}
           />
         ))}
       </SortableContext>

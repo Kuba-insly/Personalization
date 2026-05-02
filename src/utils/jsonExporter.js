@@ -31,16 +31,20 @@ function generateKey(originalKey, siteSlug) {
   return `${prefix}.${s}${last}`
 }
 
-// Generates a key for a new option (no original key) using English slug
-function newOptionKey(opt, siteSlug, enMap) {
+// Generates a key for any changed/new option using the English translation slug
+function buildOptionKey(opt, siteSlug, enMap) {
   const s = siteSlug || 'custom'
-  if (!opt.translationKey) {
-    const pl = opt.customLabel || opt.value
-    const en = enMap[pl] || ''
-    const suffix = shortEngSlug(en) || slug(pl)
-    return `idd.custom.${s}${suffix}`
+  const pl = opt.customLabel || opt.value
+  const en = enMap[pl] || ''
+  const keySuffix = shortEngSlug(en) || slug(pl)
+
+  if (opt.translationKey) {
+    // Keep the section prefix (e.g. idd.car), replace suffix with English slug
+    const parts = opt.translationKey.split('.')
+    const prefix = parts.slice(0, -1).join('.')
+    return `${prefix}.${s}${keySuffix}`
   }
-  return generateKey(opt.translationKey, siteSlug)
+  return `idd.custom.${s}${keySuffix}`
 }
 
 // Builds the schema object for a field that already existed in the original JSON
@@ -50,20 +54,31 @@ function buildExistingField(field, priority, siteSlug, translations, enMap) {
   let titleKey = field.title_translation_key
 
   if (field._titleChanged) {
-    titleKey = generateKey(field.title_translation_key, siteSlug)
-    translations.push({ key: titleKey, pl: field.title, en: enMap[field.title] || '' })
+    const en = enMap[field.title] || ''
+    // Use English slug of new title, keeping the original key prefix (e.g. idd.property)
+    const originalParts = (field.title_translation_key || 'idd.custom').split('.')
+    const prefix = originalParts.slice(0, -1).join('.')
+    const s = siteSlug || 'custom'
+    const keySuffix = shortEngSlug(en) || slug(field.title)
+    titleKey = `${prefix}.${s}${keySuffix}`
+    translations.push({ key: titleKey, pl: field.title, en })
   }
 
   const updated = { ...original, title: field.title, title_translation_key: titleKey, priority }
+
+  // Apply current show_if from state (overrides _originalField.show_if)
+  if (field.show_if) {
+    updated.show_if = field.show_if
+  } else {
+    delete updated.show_if
+  }
 
   if (field.type === 'checkbox-group') {
     const enumValues = field.options.map((o) => o.value)
     const enumTranslationKeys = {}
     for (const opt of field.options) {
       if (opt.customLabel !== undefined) {
-        const newKey = opt.translationKey
-          ? generateKey(opt.translationKey, siteSlug)
-          : newOptionKey(opt, siteSlug, enMap)
+        const newKey = buildOptionKey(opt, siteSlug, enMap)
         enumTranslationKeys[opt.value] = newKey
         translations.push({ key: newKey, pl: opt.customLabel, en: enMap[opt.customLabel] || '' })
       } else {
@@ -78,9 +93,7 @@ function buildExistingField(field, priority, siteSlug, translations, enMap) {
     const enumTranslationKeys = {}
     for (const opt of field.options) {
       if (opt.customLabel !== undefined) {
-        const newKey = opt.translationKey
-          ? generateKey(opt.translationKey, siteSlug)
-          : newOptionKey(opt, siteSlug, enMap)
+        const newKey = buildOptionKey(opt, siteSlug, enMap)
         enumTranslationKeys[opt.value] = newKey
         translations.push({ key: newKey, pl: opt.customLabel, en: enMap[opt.customLabel] || '' })
       } else {
@@ -103,6 +116,7 @@ function buildNewField(field, priority, siteSlug, translations, enMap) {
   translations.push({ key: titleKey, pl: field.title, en })
 
   const base = { title: field.title, title_translation_key: titleKey, priority }
+  if (field.show_if) base.show_if = field.show_if
 
   switch (field.type) {
     case 'heading':
@@ -117,7 +131,7 @@ function buildNewField(field, priority, siteSlug, translations, enMap) {
       const enumValues = field.options.map((o) => o.value)
       const enumTranslationKeys = {}
       for (const opt of field.options) {
-        const k = newOptionKey(opt, siteSlug, enMap)
+        const k = buildOptionKey(opt, siteSlug, enMap)
         enumTranslationKeys[opt.value] = k
         const pl = opt.customLabel || opt.value
         translations.push({ key: k, pl, en: enMap[pl] || '' })
@@ -132,7 +146,7 @@ function buildNewField(field, priority, siteSlug, translations, enMap) {
       const enumValues = field.options.map((o) => o.value)
       const enumTranslationKeys = {}
       for (const opt of field.options) {
-        const k = newOptionKey(opt, siteSlug, enMap)
+        const k = buildOptionKey(opt, siteSlug, enMap)
         enumTranslationKeys[opt.value] = k
         const pl = opt.customLabel || opt.value
         translations.push({ key: k, pl, en: enMap[pl] || '' })
@@ -176,12 +190,18 @@ export function exportIdd(internalState, siteSlug = '', enMap = {}) {
     updatedId = parts.join('/')
   }
 
+  const requiredKeys = internalState.fields.filter((f) => f.required).map((f) => f.key)
+  const answersBase = { ...raw.properties?.answers }
+  delete answersBase.required
+  if (requiredKeys.length > 0) answersBase.required = requiredKeys
+  answersBase.properties = answersProperties
+
   const result = {
     ...raw,
     $id: updatedId,
     properties: {
       ...raw.properties,
-      answers: { ...raw.properties?.answers, properties: answersProperties },
+      answers: answersBase,
       comment: exportedComment,
     },
   }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import JSZip from 'jszip'
 import { exportIdd } from './utils/jsonExporter'
+import inslyLogo from './assets/insly-logo.svg'
 import {
   DndContext,
   DragOverlay,
@@ -84,6 +85,7 @@ export default function App() {
   const [activeDrag, setActiveDrag] = useState(null) // { label, icon } for overlay
   const [exportStep, setExportStep] = useState('') // '' | 'translating' | 'packing'
   const [urlError, setUrlError] = useState(false)
+  const [view, setView] = useState('full') // 'full' | 'refusal'
 
   const siteId = formData?._meta?.$id?.split('/').pop() ?? 'default'
   const isDefault = siteId === 'default'
@@ -117,6 +119,8 @@ export default function App() {
     if (!over) return
 
     if (String(active.id).startsWith('toolbox:')) {
+      // toolbox drops only work in the full IDD view
+      if (view !== 'full') return
       const fieldType = String(active.id).replace('toolbox:', '')
       addField(createNewField(fieldType), over.id)
     } else if (active.id !== over.id) {
@@ -193,7 +197,8 @@ export default function App() {
     >
       <div className="app">
         <header className="toolbar">
-          <h1 className="toolbar-title">Insly - Personalizacja APK</h1>
+          <img src={inslyLogo} alt="Insly" className="toolbar-logo" />
+          <h1 className="toolbar-title">Personalizacja szablonu APK</h1>
           <div className="toolbar-actions">
             {isDirty && (
               <span className="dirty-badge">● Niezapisane zmiany</span>
@@ -223,21 +228,25 @@ export default function App() {
             <button className="btn btn-secondary" onClick={() => setShowImport(true)}>
               Wczytaj JSON
             </button>
-            <button className="btn btn-primary" onClick={handleExport} disabled={!!exportStep || !formData}>
+            <button className="btn btn-primary" onClick={handleExport} disabled={!isDirty || !!exportStep || !formData}>
               {exportStep === 'translating' ? 'Tłumaczę…' : exportStep === 'packing' ? 'Pakuję…' : 'Pobierz ZIP'}
             </button>
           </div>
         </header>
 
         <div className="workspace">
-          <aside className="toolbox">
+          <aside className={`toolbox${view === 'refusal' ? ' toolbox--disabled' : ''}`}>
             <div className="toolbox-header">Elementy</div>
             <div className="toolbox-items">
               {TOOLBOX_ITEMS.map((item) => (
                 <ToolboxItem key={item.id} {...item} />
               ))}
             </div>
-            <div className="toolbox-hint">Przeciągnij element na formularz</div>
+            <div className="toolbox-hint">
+              {view === 'refusal'
+                ? 'Dostępne tylko w widoku Pełne IDD'
+                : 'Przeciągnij element na formularz'}
+            </div>
           </aside>
 
           <main className="canvas">
@@ -257,10 +266,27 @@ export default function App() {
                 : urlError && <span className="url-error-hint">← Uzupełnij link do programu przed pobraniem</span>
               }
             </div>
+
+            <div className="view-toggle">
+              <button
+                className={`view-toggle-btn${view === 'full' ? ' view-toggle-btn--active' : ''}`}
+                onClick={() => setView('full')}
+              >
+                Pełne IDD
+              </button>
+              <button
+                className={`view-toggle-btn${view === 'refusal' ? ' view-toggle-btn--active' : ''}`}
+                onClick={() => setView('refusal')}
+              >
+                Odmowa IDD
+              </button>
+            </div>
+
             <FormEditor
               formData={formData}
               onUpdateField={updateField}
               onRemoveField={removeField}
+              view={view}
             />
           </main>
         </div>

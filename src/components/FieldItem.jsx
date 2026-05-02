@@ -69,6 +69,7 @@ export default function FieldItem({ field, onUpdateField }) {
       <div className="field-boolean">
         <input type="checkbox" disabled />
         <label>
+          {field.required && <span className="field-required-star">*</span>}
           <TextEditor value={label} onSave={handleLabelSave} multiline />
         </label>
       </div>
@@ -157,6 +158,7 @@ export default function FieldItem({ field, onUpdateField }) {
     return (
       <div className="field-textarea-box">
         <span className="field-textarea-label">
+          {field.required && <span className="field-required-star">*</span>}
           <TextEditor value={label} onSave={handleLabelSave} className="text-editor--orange" />
         </span>
         <textarea className="field-textarea-inner" disabled rows={3} />
@@ -172,6 +174,7 @@ export default function FieldItem({ field, onUpdateField }) {
   return (
     <div className="field-row">
       <label className="field-label">
+        {field.required && <span className="field-required-star">*</span>}
         <TextEditor value={label} onSave={handleLabelSave} multiline />
       </label>
       <input className="field-input" type="text" disabled placeholder={label} />

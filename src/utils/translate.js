@@ -15,6 +15,7 @@ export function t(key, fallback = '') {
  * 3. key as last resort
  */
 export function fieldLabel(field) {
+  if (field._titleChanged) return field.title || field.key
   if (field.title_translation_key) {
     const translated = pl[field.title_translation_key]
     if (translated) return translated

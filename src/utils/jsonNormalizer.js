@@ -58,6 +58,8 @@ export function normalizeIdd(rawJson) {
   const answersProperties = rawJson?.properties?.answers?.properties ?? {}
   const commentField = rawJson?.properties?.comment
 
+  const answersRequired = new Set(rawJson?.properties?.answers?.required ?? [])
+
   const fields = Object.entries(answersProperties)
     .map(([key, field]) => ({
       key,
@@ -68,6 +70,7 @@ export function normalizeIdd(rawJson) {
       tag: field.tag,
       options: resolveOptions(field),
       show_if: field.show_if,
+      required: answersRequired.has(key),
       _originalField: field,
     }))
     .sort((a, b) => a.priority - b.priority)

@@ -3,6 +3,16 @@ import { normalizeIdd } from '../utils/jsonNormalizer'
 import defaultIdd from '../schema/defaultIdd.json'
 
 const STORAGE_KEY = 'idd-personalization-state'
+
+function getSectionParentFromList(fieldKey, fields) {
+  const idx = fields.findIndex((f) => f.key === fieldKey)
+  if (idx <= 0) return null
+  for (let i = idx - 1; i >= 0; i--) {
+    if (fields[i].type === 'heading') return null
+    if (fields[i].type === 'checkbox-group' || fields[i].type === 'select') return fields[i]
+  }
+  return null
+}
 const defaultNormalized = normalizeIdd(defaultIdd)
 const HISTORY_LIMIT = 50
 
@@ -11,6 +21,9 @@ function loadFromStorage() {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
     const { formJson, isDirty } = JSON.parse(raw)
+    // If stored form is the default schema with no unsaved changes, always use the
+    // current defaultIdd.json so updates (e.g. new required fields) are reflected.
+    if (!isDirty && formJson?.$id === defaultIdd.$id) return null
     return { normalized: normalizeIdd(formJson), isDirty, formJson }
   } catch {
     return null
@@ -91,10 +104,41 @@ export function useFormState() {
 
   function updateField(key, changes) {
     pushHistory(formData)
-    setFormData((prev) => ({
-      ...prev,
-      fields: prev.fields.map((f) => (f.key === key ? { ...f, ...changes } : f)),
-    }))
+    if (key === '__comment') {
+      setFormData((prev) => ({
+        ...prev,
+        comment: prev.comment ? { ...prev.comment, ...changes } : prev.comment,
+      }))
+    } else {
+      setFormData((prev) => {
+        let fields = prev.fields.map((f) => (f.key === key ? { ...f, ...changes } : f))
+
+        // When options change on a field, clean up orphaned show_if on other fields
+        if (changes.options) {
+          const currentField = prev.fields.find((f) => f.key === key)
+          if (currentField) {
+            const newValueSet = new Set((changes.options).map((o) => o.value))
+            const removedValues = (currentField.options || [])
+              .map((o) => o.value)
+              .filter((v) => !newValueSet.has(v))
+
+            if (removedValues.length > 0) {
+              fields = fields.map((f) => {
+                if (!f.show_if?.fields?.length) return f
+                const { name, value: condValues } = f.show_if.fields[0]
+                if (name.replace('answers.', '') !== key) return f
+                const remaining = (condValues || []).filter((v) => !removedValues.includes(v))
+                if (remaining.length === condValues.length) return f
+                if (remaining.length === 0) return { ...f, show_if: null }
+                return { ...f, show_if: { fields: [{ name, value: remaining }] } }
+              })
+            }
+          }
+        }
+
+        return { ...prev, fields }
+      })
+    }
     setIsDirty(true)
   }
 
@@ -113,7 +157,14 @@ export function useFormState() {
     pushHistory(formData)
     setFormData((prev) => ({
       ...prev,
-      fields: prev.fields.filter((f) => f.key !== key),
+      fields: prev.fields
+        .filter((f) => f.key !== key)
+        .map((f) => {
+          if (!f.show_if?.fields?.length) return f
+          const parentKey = f.show_if.fields[0].name.replace('answers.', '')
+          if (parentKey !== key) return f
+          return { ...f, show_if: null }
+        }),
     }))
     setIsDirty(true)
   }
@@ -127,6 +178,19 @@ export function useFormState() {
       if (from === -1 || to === -1 || from === to) return prev
       const [item] = fields.splice(from, 1)
       fields.splice(to, 0, item)
+
+      // If the moved field had a show_if, check if its new section parent still matches.
+      // If not, clear the condition to avoid a dangling reference.
+      const movedIdx = fields.findIndex((f) => f.key === fromKey)
+      const moved = fields[movedIdx]
+      if (moved?.show_if?.fields?.length) {
+        const condParentKey = moved.show_if.fields[0].name.replace('answers.', '')
+        const newSectionParent = getSectionParentFromList(fromKey, fields)
+        if (!newSectionParent || newSectionParent.key !== condParentKey) {
+          fields[movedIdx] = { ...moved, show_if: null }
+        }
+      }
+
       return { ...prev, fields }
     })
     setIsDirty(true)

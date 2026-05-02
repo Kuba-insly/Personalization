@@ -450,7 +450,12 @@
                     "type": "string",
                     "maxLength": 1024
                 }
-            }
+            },
+            "required": [
+                "otherIddRequirenment_comment",
+                "nonAcceptableExclusions_comment",
+                "searchingEsgProduct_comment"
+            ]
         },
         "comment": {
             "title_translation_key": "idd.comment",
