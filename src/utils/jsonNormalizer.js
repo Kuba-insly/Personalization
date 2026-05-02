@@ -58,7 +58,10 @@ export function normalizeIdd(rawJson) {
   const answersProperties = rawJson?.properties?.answers?.properties ?? {}
   const commentField = rawJson?.properties?.comment
 
-  const answersRequired = new Set(rawJson?.properties?.answers?.required ?? [])
+  const answersRequired = new Set([
+    ...(rawJson?.properties?.answers?.required ?? []),
+    ...(rawJson?.properties?.answers?.then?.required ?? []),
+  ])
 
   const fields = Object.entries(answersProperties)
     .map(([key, field]) => ({

@@ -190,10 +190,22 @@ export function exportIdd(internalState, siteSlug = '', enMap = {}) {
     updatedId = parts.join('/')
   }
 
-  const requiredKeys = internalState.fields.filter((f) => f.required).map((f) => f.key)
+  // Fields with show_if are required-when-visible — Insly handles that via show_if itself.
+  // Only unconditionally required fields go into then.required.
+  const requiredKeys = internalState.fields
+    .filter((f) => f.required && !f.show_if)
+    .map((f) => f.key)
+
   const answersBase = { ...raw.properties?.answers }
-  delete answersBase.required
-  if (requiredKeys.length > 0) answersBase.required = requiredKeys
+  delete answersBase.required  // remove any legacy flat required
+  const originalThen = answersBase.then || {}
+  if (requiredKeys.length > 0) {
+    answersBase.then = { ...originalThen, required: requiredKeys }
+  } else {
+    const { required: _r, ...restThen } = originalThen
+    answersBase.then = Object.keys(restThen).length > 0 ? restThen : undefined
+    if (!answersBase.then) delete answersBase.then
+  }
   answersBase.properties = answersProperties
 
   const result = {
