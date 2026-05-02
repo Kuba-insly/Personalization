@@ -452,6 +452,13 @@
                 }
             },
             "required": [
+                "car_comment",
+                "property_comment",
+                "travel_comment",
+                "life_comment",
+                "agricultural_comment",
+                "company_comment",
+                "inthefuture_comment",
                 "otherIddRequirenment_comment",
                 "nonAcceptableExclusions_comment",
                 "searchingEsgProduct_comment"
