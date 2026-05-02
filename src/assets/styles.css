@@ -875,6 +875,45 @@ body {
   margin-right: 2px;
 }
 
+/* ── Mobile / narrow screens ────────────────────────── */
+@media (max-width: 640px) {
+  .toolbar {
+    padding: 0 12px;
+    gap: 8px;
+    height: auto;
+    min-height: 52px;
+    flex-wrap: wrap;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .toolbar-title { display: none; }
+
+  .toolbar-actions {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .toolbox { display: none; }
+
+  .canvas { padding: 12px; }
+
+  .canvas-meta {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .program-url-input { width: 100%; }
+
+  .sortable-field-item {
+    gap: 4px;
+  }
+
+  .field-options-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ── Toolbox disabled state (refusal view) ───────────── */
 .toolbox--disabled .toolbox-items {
   opacity: 0.35;
