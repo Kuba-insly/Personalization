@@ -176,10 +176,11 @@ export default function SortableFieldItem({ field, onUpdateField, onRemove, allF
     sectionParent !== null &&
     !NO_CONDITION_KEYS.has(field.key)
 
-  // Fields with show_if but NOT explicitly marked required — inherently required when visible.
-  // (original schema fields like car_comment — grey locked badge)
+  // Grey locked badge only for fields that had show_if in the ORIGINAL schema (e.g. car_comment).
+  // Fields where the user manually added a condition do NOT get the grey badge.
   const isInherentlyRequired =
     !!(field.show_if) &&
+    !!(field._originalField?.show_if) &&
     !field.required &&
     (field.type === 'text' || field.type === 'textarea') &&
     !NO_REQUIRED_KEYS.has(field.key)
