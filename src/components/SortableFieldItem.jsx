@@ -177,17 +177,25 @@ export default function SortableFieldItem({ field, onUpdateField, onRemove, allF
     !NO_CONDITION_KEYS.has(field.key)
 
   // Fields with show_if are always required when visible — Insly enforces this inherently.
-  // Show a locked badge; don't allow toggling.
   const isInherentlyRequired =
     !!(field.show_if) &&
     (field.type === 'text' || field.type === 'textarea') &&
     !NO_REQUIRED_KEYS.has(field.key)
 
-  const canHaveRequired =
+  const isTextOrTextarea =
     onUpdateField &&
     (field.type === 'text' || field.type === 'textarea') &&
     !NO_REQUIRED_KEYS.has(field.key) &&
     !isInherentlyRequired
+
+  // Under a section (not locked): clicking + Wymagane sets show_if anyMode → required when visible
+  const canMarkRequiredViaSectionCondition =
+    isTextOrTextarea && sectionParent !== null && !NO_CONDITION_KEYS.has(field.key)
+
+  // Outside a section (or locked keys): clicking + Wymagane sets required: true in array
+  const canMarkRequiredDirectly = isTextOrTextarea && !canMarkRequiredViaSectionCondition
+
+  const canHaveRequired = canMarkRequiredViaSectionCondition || canMarkRequiredDirectly
 
   return (
     <div ref={setNodeRef} style={style} className="sortable-field-item">
@@ -218,7 +226,16 @@ export default function SortableFieldItem({ field, onUpdateField, onRemove, allF
         {canHaveRequired && !field.required && !editingCondition && (
           <button
             className="required-add-btn"
-            onClick={() => onUpdateField(field.key, { required: true })}
+            onClick={() => {
+              if (canMarkRequiredViaSectionCondition) {
+                const allParentOpts = sectionParent.options.map((o) => o.value)
+                onUpdateField(field.key, {
+                  show_if: { fields: [{ name: `answers.${sectionParent.key}`, value: allParentOpts }] },
+                })
+              } else {
+                onUpdateField(field.key, { required: true })
+              }
+            }}
           >
             + Wymagane
           </button>
