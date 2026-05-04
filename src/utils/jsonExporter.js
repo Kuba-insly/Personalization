@@ -190,14 +190,31 @@ export function exportIdd(internalState, siteSlug = '', enMap = {}) {
     updatedId = parts.join('/')
   }
 
-  // Fields with show_if are required-when-visible — Insly handles that via show_if itself.
-  // Only unconditionally required fields go into then.required.
+  // Unconditionally required fields (no show_if) → answers.then.required
   const requiredKeys = internalState.fields
     .filter((f) => f.required && !f.show_if)
     .map((f) => f.key)
 
+  // Conditionally required fields (has show_if + required) → answers.allOf if/then blocks
+  const conditionalRequiredBlocks = internalState.fields
+    .filter((f) => f.required && f.show_if?.fields?.length)
+    .map((f) => {
+      const { name, value } = f.show_if.fields[0]
+      const parentKey = name.replace('answers.', '')
+      return {
+        if: {
+          properties: {
+            [parentKey]: { type: 'array', contains: { enum: value } },
+          },
+          required: [parentKey],
+        },
+        then: { required: [f.key] },
+      }
+    })
+
   const answersBase = { ...raw.properties?.answers }
   delete answersBase.required  // remove any legacy flat required
+
   const originalThen = answersBase.then || {}
   if (requiredKeys.length > 0) {
     answersBase.then = { ...originalThen, required: requiredKeys }
@@ -206,6 +223,13 @@ export function exportIdd(internalState, siteSlug = '', enMap = {}) {
     answersBase.then = Object.keys(restThen).length > 0 ? restThen : undefined
     if (!answersBase.then) delete answersBase.then
   }
+
+  if (conditionalRequiredBlocks.length > 0) {
+    answersBase.allOf = conditionalRequiredBlocks
+  } else {
+    delete answersBase.allOf
+  }
+
   answersBase.properties = answersProperties
 
   const result = {

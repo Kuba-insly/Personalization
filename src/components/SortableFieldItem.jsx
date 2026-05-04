@@ -176,9 +176,11 @@ export default function SortableFieldItem({ field, onUpdateField, onRemove, allF
     sectionParent !== null &&
     !NO_CONDITION_KEYS.has(field.key)
 
-  // Fields with show_if are always required when visible — Insly enforces this inherently.
+  // Fields with show_if but NOT explicitly marked required — inherently required when visible.
+  // (original schema fields like car_comment — grey locked badge)
   const isInherentlyRequired =
     !!(field.show_if) &&
+    !field.required &&
     (field.type === 'text' || field.type === 'textarea') &&
     !NO_REQUIRED_KEYS.has(field.key)
 
@@ -213,7 +215,7 @@ export default function SortableFieldItem({ field, onUpdateField, onRemove, allF
         {field.required && !isInherentlyRequired && !editingCondition && (
           <div
             className="required-badge"
-            onClick={() => onUpdateField(field.key, { required: false })}
+            onClick={() => onUpdateField(field.key, { required: false, show_if: null })}
             title="Kliknij aby oznaczyć jako opcjonalne"
             style={{ cursor: 'pointer' }}
           >
@@ -230,6 +232,7 @@ export default function SortableFieldItem({ field, onUpdateField, onRemove, allF
               if (canMarkRequiredViaSectionCondition) {
                 const allParentOpts = sectionParent.options.map((o) => o.value)
                 onUpdateField(field.key, {
+                  required: true,
                   show_if: { fields: [{ name: `answers.${sectionParent.key}`, value: allParentOpts }] },
                 })
               } else {
