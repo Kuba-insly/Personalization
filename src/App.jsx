@@ -2,6 +2,7 @@ import { useState } from 'react'
 import JSZip from 'jszip'
 import { exportIdd } from './utils/jsonExporter'
 import inslyLogo from './assets/insly-logo.svg'
+import inslyLogoGrey from './assets/insly-logo-grey.svg'
 import {
   DndContext,
   DragOverlay,
@@ -14,6 +15,7 @@ import {
 import { useFormState } from './hooks/useFormState'
 import FormEditor from './components/FormEditor'
 import JsonImport from './components/JsonImport'
+import PlaceholderModule from './components/PlaceholderModule'
 import './assets/styles.css'
 
 const TOOLBOX_ITEMS = [
@@ -86,6 +88,7 @@ export default function App() {
   const [exportStep, setExportStep] = useState('') // '' | 'translating' | 'packing'
   const [urlError, setUrlError] = useState(false)
   const [view, setView] = useState('full') // 'full' | 'refusal'
+  const [module, setModule] = useState('idd') // 'idd' | 'mail-apk' | 'mail-rodo' | 'print-apk' | 'print-rodo' | 'print-offer'
 
   const siteId = formData?._meta?.$id?.split('/').pop() ?? 'default'
   const isDefault = siteId === 'default'
@@ -198,7 +201,7 @@ export default function App() {
       <div className="app">
         <header className="toolbar">
           <img src={inslyLogo} alt="Insly" className="toolbar-logo" />
-          <h1 className="toolbar-title">Personalizacja szablonu APK</h1>
+          <h1 className="toolbar-title">Personalizacja Insly</h1>
           <div className="toolbar-actions">
             {isDirty && (
               <span className="dirty-badge">● Niezapisane zmiany</span>
@@ -234,60 +237,90 @@ export default function App() {
           </div>
         </header>
 
+        <nav className="module-tabs">
+          {[
+            { id: 'idd',          label: 'Formularz IDD' },
+            { id: 'mail-apk',     label: 'Mail APK' },
+            { id: 'mail-rodo',    label: 'Mail RODO' },
+            { id: 'print-apk',    label: 'Wydruk APK' },
+            { id: 'print-rodo',   label: 'Wydruk RODO' },
+            { id: 'print-offer',  label: 'Wydruk oferty' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              className={`module-tab${module === tab.id ? ' module-tab--active' : ''}`}
+              onClick={() => setModule(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+
         <div className="workspace">
-          <aside className={`toolbox${view === 'refusal' ? ' toolbox--disabled' : ''}`}>
-            <div className="toolbox-header">Elementy</div>
-            <div className="toolbox-items">
-              {TOOLBOX_ITEMS.map((item) => (
-                <ToolboxItem key={item.id} {...item} />
-              ))}
-            </div>
-            <div className="toolbox-hint">
-              {view === 'refusal'
-                ? 'Dostępne tylko w widoku Pełne IDD'
-                : 'Przeciągnij element na formularz'}
-            </div>
-          </aside>
+          {module === 'idd' && (
+            <aside className={`toolbox${view === 'refusal' ? ' toolbox--disabled' : ''}`}>
+              <div className="toolbox-header">Elementy</div>
+              <div className="toolbox-items">
+                {TOOLBOX_ITEMS.map((item) => (
+                  <ToolboxItem key={item.id} {...item} />
+                ))}
+              </div>
+              <div className="toolbox-hint">
+                {view === 'refusal'
+                  ? 'Dostępne tylko w widoku Pełne IDD'
+                  : 'Przeciągnij element na formularz'}
+              </div>
+              <div className="toolbox-logo-footer">
+                <img src={inslyLogoGrey} alt="Insly" className="toolbox-logo-grey" />
+              </div>
+            </aside>
+          )}
 
           <main className="canvas">
-            <div className="canvas-meta">
-              <span className="meta-label">Schemat:</span>
-              <span className="meta-value">{siteId}</span>
-              <span className="meta-label" style={{ marginLeft: 12 }}>Link do programu:</span>
-              <input
-                className={`program-url-input${urlError ? ' program-url-input--error' : ''}`}
-                value={programUrl}
-                onChange={(e) => handleUrlChange(e.target.value)}
-                placeholder="https://nazwa.insly.pl"
-                title="Wklej link do programu Insly — subdomena zostanie użyta w kluczach tłumaczeń"
-              />
-              {siteSlug
-                ? <span className="meta-value" title="Subdomena używana w kluczach tłumaczeń">{siteSlug}</span>
-                : urlError && <span className="url-error-hint">← Uzupełnij link do programu przed pobraniem</span>
-              }
-            </div>
+            {module === 'idd' ? (
+              <>
+                <div className="canvas-meta">
+                  <span className="meta-label">Schemat:</span>
+                  <span className="meta-value">{siteId}</span>
+                  <span className="meta-label" style={{ marginLeft: 12 }}>Link do programu:</span>
+                  <input
+                    className={`program-url-input${urlError ? ' program-url-input--error' : ''}`}
+                    value={programUrl}
+                    onChange={(e) => handleUrlChange(e.target.value)}
+                    placeholder="https://nazwa.insly.pl"
+                    title="Wklej link do programu Insly — subdomena zostanie użyta w kluczach tłumaczeń"
+                  />
+                  {siteSlug
+                    ? <span className="meta-value" title="Subdomena używana w kluczach tłumaczeń">{siteSlug}</span>
+                    : urlError && <span className="url-error-hint">← Uzupełnij link do programu przed pobraniem</span>
+                  }
+                </div>
 
-            <div className="view-toggle">
-              <button
-                className={`view-toggle-btn${view === 'full' ? ' view-toggle-btn--active' : ''}`}
-                onClick={() => setView('full')}
-              >
-                Pełne IDD
-              </button>
-              <button
-                className={`view-toggle-btn${view === 'refusal' ? ' view-toggle-btn--active' : ''}`}
-                onClick={() => setView('refusal')}
-              >
-                Odmowa IDD
-              </button>
-            </div>
+                <div className="view-toggle">
+                  <button
+                    className={`view-toggle-btn${view === 'full' ? ' view-toggle-btn--active' : ''}`}
+                    onClick={() => setView('full')}
+                  >
+                    Pełne IDD
+                  </button>
+                  <button
+                    className={`view-toggle-btn${view === 'refusal' ? ' view-toggle-btn--active' : ''}`}
+                    onClick={() => setView('refusal')}
+                  >
+                    Odmowa IDD
+                  </button>
+                </div>
 
-            <FormEditor
-              formData={formData}
-              onUpdateField={updateField}
-              onRemoveField={removeField}
-              view={view}
-            />
+                <FormEditor
+                  formData={formData}
+                  onUpdateField={updateField}
+                  onRemoveField={removeField}
+                  view={view}
+                />
+              </>
+            ) : (
+              <PlaceholderModule module={module} />
+            )}
           </main>
         </div>
       </div>

@@ -1,6 +1,6 @@
-# IDD Personalization Tool
+# Insly Personalization Tool
 
-Webowa aplikacja do edycji struktury formularza IDD z systemu Insly i eksportu zmodyfikowanego JSON.
+Webowa aplikacja do personalizacji konfiguracji Insly: formularze IDD, treści maili, wydruki.
 
 ## Wymagania
 
@@ -12,7 +12,7 @@ Webowa aplikacja do edycji struktury formularza IDD z systemu Insly i eksportu z
 ```bash
 # Sklonuj repozytorium
 git clone <URL_REPOZYTORIUM>
-cd IDDPersonalization
+cd Personalization
 
 # Zainstaluj zależności
 npm install

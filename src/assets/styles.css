@@ -660,7 +660,7 @@ body {
 .view-toggle {
   display: flex;
   gap: 0;
-  margin: 10px 0 4px;
+  margin: 10px 0 4px 22px;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   overflow: hidden;
@@ -919,6 +919,66 @@ body {
   .field-options-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ── Module tab bar ──────────────────────────────────── */
+.module-tabs {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  padding: 0 20px;
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+
+.module-tab {
+  padding: 11px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+.module-tab:hover:not(.module-tab--active) {
+  color: #1a1a1a;
+}
+.module-tab--active {
+  border-bottom-color: #ca6000;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+/* ── Placeholder module ───────────────────────────────── */
+.module-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  gap: 10px;
+  color: #94a3b8;
+}
+.module-placeholder-icon { font-size: 32px; }
+.module-placeholder-title { font-size: 16px; font-weight: 600; color: #64748b; }
+.module-placeholder-desc { font-size: 13px; }
+
+/* ── Toolbox logo footer ─────────────────────────────── */
+.toolbox-logo-footer {
+  margin-top: auto;
+  padding: 16px 16px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.toolbox-logo-grey {
+  width: 80px;
+  height: auto;
+  opacity: 0.45;
 }
 
 /* ── Toolbox disabled state (refusal view) ───────────── */
