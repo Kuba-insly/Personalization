@@ -176,10 +176,18 @@ export default function SortableFieldItem({ field, onUpdateField, onRemove, allF
     sectionParent !== null &&
     !NO_CONDITION_KEYS.has(field.key)
 
+  // Fields with show_if are always required when visible — Insly enforces this inherently.
+  // Show a locked badge; don't allow toggling.
+  const isInherentlyRequired =
+    !!(field.show_if) &&
+    (field.type === 'text' || field.type === 'textarea') &&
+    !NO_REQUIRED_KEYS.has(field.key)
+
   const canHaveRequired =
     onUpdateField &&
     (field.type === 'text' || field.type === 'textarea') &&
-    !NO_REQUIRED_KEYS.has(field.key)
+    !NO_REQUIRED_KEYS.has(field.key) &&
+    !isInherentlyRequired
 
   return (
     <div ref={setNodeRef} style={style} className="sortable-field-item">
@@ -187,7 +195,14 @@ export default function SortableFieldItem({ field, onUpdateField, onRemove, allF
         ⠿
       </div>
       <div className="field-item-content">
-        {field.required && !editingCondition && (
+        {isInherentlyRequired && !editingCondition && (
+          <div className="required-badge required-badge--locked" title="Wymagane gdy pole jest widoczne — zachowanie wbudowane w Insly">
+            <span className="required-badge-star">*</span>
+            <span className="required-badge-text">Wymagane gdy widoczne</span>
+          </div>
+        )}
+
+        {field.required && !isInherentlyRequired && !editingCondition && (
           <div
             className="required-badge"
             onClick={() => onUpdateField(field.key, { required: false })}

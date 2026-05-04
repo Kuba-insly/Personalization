@@ -850,6 +850,13 @@ body {
   width: fit-content;
 }
 .required-badge:hover { background: #fee2e2; }
+.required-badge--locked {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #6b7280;
+  cursor: default;
+}
+.required-badge--locked:hover { background: #f3f4f6; }
 .required-badge-star { font-weight: 700; font-size: 13px; }
 .required-badge-text { font-weight: 500; }
 .required-badge-edit { opacity: 0; font-size: 10px; margin-left: 2px; }
