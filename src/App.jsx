@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import JSZip from 'jszip'
 import { exportIdd } from './utils/jsonExporter'
 import inslyLogoLight from './assets/insly-logo-dark.svg'
@@ -93,6 +93,18 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('insly-dark-mode') === 'true'
   })
+  const [darkUnlocked, setDarkUnlocked] = useState(false)
+  const keyBuffer = useRef('')
+
+  useEffect(() => {
+    function handleKey(e) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return
+      keyBuffer.current = (keyBuffer.current + e.key).slice(-4)
+      if (keyBuffer.current === 'dark') setDarkUnlocked(true)
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [])
 
   const siteId = formData?._meta?.$id?.split('/').pop() ?? 'default'
   const isDefault = siteId === 'default'
@@ -215,9 +227,11 @@ export default function App() {
           <img src={darkMode ? inslyLogoDark : inslyLogoLight} alt="Insly" className="toolbar-logo" />
           <h1 className="toolbar-title">Personalizacja Insly</h1>
           <div className="toolbar-actions">
-            <button className="btn btn-ghost btn-sm darkmode-toggle" onClick={toggleDarkMode} title={darkMode ? 'Tryb jasny' : 'Tryb ciemny'}>
-              {darkMode ? '☀' : '☾'}
-            </button>
+            {darkUnlocked && (
+              <button className="btn btn-ghost btn-sm darkmode-toggle" onClick={toggleDarkMode} title={darkMode ? 'Tryb jasny' : 'Tryb ciemny'}>
+                {darkMode ? '☀' : '☾'}
+              </button>
+            )}
             {isDirty && (
               <span className="dirty-badge">● Niezapisane zmiany</span>
             )}
