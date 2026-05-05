@@ -181,16 +181,29 @@ Eksport:
 - `pl.js` → mapa klucz → tekst PL
 - Eksport generuje angielskie wersje via MyMemory API
 
-## Kolory CSS (główne)
+## Kolory CSS (design system Insly)
+
+Projekt używa tokenów z oficjalnego Insly Design System v1.3.
 
 | Użycie | Wartość |
 |--------|---------|
-| Tło strony | `#f0f2f5` |
-| Toolbar | `#1a1a1a` |
-| Primary button | `#ca6000` (pomarańczowy) |
-| Dirty badge | `#fbbf24` (żółty) |
-| Success | `#22c55e` (zielony) |
-| Tekst | `#111111` |
+| Tło strony | `#f5f5f5` |
+| Toolbar | `#ffffff` (biały, border-bottom rgba(0,0,0,0.1)) |
+| Accent / primary button | `#FF7D00` (brand orange) |
+| Accent hover | `rgb(255,155,0)` |
+| Success | `#00AF87` (zielony) |
+| Error / destructive | `#E23009` (czerwony) |
+| Tekst główny | `#000000` |
+| Tekst secondary | `#777777` |
+| Tekst subtle (placeholder) | `#999999` |
+| Tekst disabled | `#D0D0D0` |
+| Tło toolboxa (sidebar) | `#FAF3EB` (ciepły beż) |
+| Border sidebar | `rgba(236, 227, 218, 1)` |
+| Border input | `rgba(0,0,0,0.2)` |
+| Border separator | `rgba(0,0,0,0.1)` |
+| Border radius | `5px` |
+| Shadow modal | `-6px 6px 0 0 rgba(148,119,90,0.24)` |
+| Font | `'Museo Sans'` (300/500/700) ładowany z Google Fonts |
 
 ## Moduły (zakładki w UI)
 
