@@ -3,7 +3,8 @@ const MODULE_LABELS = {
   'mail-rodo':   'Mail RODO',
   'print-apk':   'Wydruk APK',
   'print-rodo':  'Wydruk RODO',
-  'print-offer': 'Wydruk oferty',
+  'print-offer':    'Wydruk oferty',
+  'sales-packages': 'Pakiety sprzedaży',
 }
 
 export default function PlaceholderModule({ module }) {
