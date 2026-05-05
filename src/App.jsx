@@ -239,12 +239,13 @@ export default function App() {
 
         <nav className="module-tabs">
           {[
-            { id: 'idd',          label: 'Formularz IDD' },
-            { id: 'mail-apk',     label: 'Mail APK' },
-            { id: 'mail-rodo',    label: 'Mail RODO' },
-            { id: 'print-apk',    label: 'Wydruk APK' },
-            { id: 'print-rodo',   label: 'Wydruk RODO' },
-            { id: 'print-offer',  label: 'Wydruk oferty' },
+            { id: 'idd',            label: 'Formularz IDD' },
+            { id: 'mail-apk',       label: 'Mail APK' },
+            { id: 'mail-rodo',      label: 'Mail RODO' },
+            { id: 'print-apk',      label: 'Wydruk APK' },
+            { id: 'print-rodo',     label: 'Wydruk RODO' },
+            { id: 'print-offer',    label: 'Wydruk oferty' },
+            { id: 'sales-packages', label: 'Pakiety sprzedaży' },
           ].map((tab) => (
             <button
               key={tab.id}
