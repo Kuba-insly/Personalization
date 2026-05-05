@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import JSZip from 'jszip'
 import { exportIdd } from './utils/jsonExporter'
-import inslyLogo from './assets/insly-logo.svg'
+import inslyLogoLight from './assets/insly-logo-dark.svg'
+import inslyLogoDark from './assets/insly-logo.svg'
 import inslyLogoGrey from './assets/insly-logo-grey.svg'
 import {
   DndContext,
@@ -89,6 +90,9 @@ export default function App() {
   const [urlError, setUrlError] = useState(false)
   const [view, setView] = useState('full') // 'full' | 'refusal'
   const [module, setModule] = useState('idd') // 'idd' | 'mail-apk' | 'mail-rodo' | 'print-apk' | 'print-rodo' | 'print-offer'
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('insly-dark-mode') === 'true'
+  })
 
   const siteId = formData?._meta?.$id?.split('/').pop() ?? 'default'
   const isDefault = siteId === 'default'
@@ -190,6 +194,14 @@ export default function App() {
     }
   }
 
+  function toggleDarkMode() {
+    setDarkMode(prev => {
+      const next = !prev
+      localStorage.setItem('insly-dark-mode', String(next))
+      return next
+    })
+  }
+
   return (
     <DndContext
       sensors={sensors}
@@ -198,11 +210,14 @@ export default function App() {
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <div className="app">
+      <div className={`app${darkMode ? ' app--dark' : ''}`}>
         <header className="toolbar">
-          <img src={inslyLogo} alt="Insly" className="toolbar-logo" />
+          <img src={darkMode ? inslyLogoDark : inslyLogoLight} alt="Insly" className="toolbar-logo" />
           <h1 className="toolbar-title">Personalizacja Insly</h1>
           <div className="toolbar-actions">
+            <button className="btn btn-ghost btn-sm darkmode-toggle" onClick={toggleDarkMode} title={darkMode ? 'Tryb jasny' : 'Tryb ciemny'}>
+              {darkMode ? '☀' : '☾'}
+            </button>
             {isDirty && (
               <span className="dirty-badge">● Niezapisane zmiany</span>
             )}
