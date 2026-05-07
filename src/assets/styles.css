@@ -1219,3 +1219,820 @@ body {
 
 .app--dark .module-placeholder-title { color: var(--dm-text2); }
 .app--dark .module-placeholder { color: var(--dm-text3); }
+
+/* ═══════════════════════════════════════════════════════════
+   MAIL APK EDITOR
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Root layout ─────────────────────────────────────────── */
+.mail-apk-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.mail-apk-loading {
+  padding: 40px;
+  color: #777;
+  text-align: center;
+}
+
+/* ── Per-module toolbar ──────────────────────────────────── */
+.mail-apk-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.mail-apk-subject-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 280px;
+}
+
+.mail-apk-subject-input {
+  flex: 1;
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  background: #fff;
+  color: #000;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.mail-apk-subject-input:focus {
+  border-color: #FF7D00;
+  box-shadow: 0 0 0 2px rgba(255,125,0,0.15);
+}
+
+.mail-apk-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ── Formatting toolbar (docked below top bar) ───────────── */
+.mail-editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+/* ── Email canvas ────────────────────────────────────────── */
+.mail-apk-email-canvas {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 16px;
+  background: #f5f5f5;
+}
+
+.mail-apk-email-frame {
+  max-width: 680px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* ── Inline editable sections ───────────────────────────── */
+.mail-inline-section {
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding-left: 0;
+}
+
+.mail-inline-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #999;
+  padding: 6px 16px 2px;
+  user-select: none;
+}
+
+.mail-inline-section .rich-area {
+  padding: 8px 16px 14px;
+  min-height: 48px;
+  background: transparent;
+}
+.mail-inline-section .rich-area:focus {
+  background: #fffdf9;
+  box-shadow: inset 0 0 0 2px rgba(255,125,0,0.25);
+}
+
+/* ── Conditional banner ──────────────────────────────────── */
+.mail-conditional-banner {
+  padding: 6px 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.mail-conditional-indicator {
+  font-size: 11px;
+  font-weight: 500;
+  color: #555;
+}
+
+/* ── Oath list inline ────────────────────────────────────── */
+.mail-oath-section {
+  padding-bottom: 8px;
+}
+
+.mail-oath-list {
+  list-style: decimal;
+  padding: 4px 16px 4px 40px;
+  margin: 0;
+}
+
+.mail-oath-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.mail-oath-item .rich-area {
+  flex: 1;
+  min-height: 36px;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+}
+.mail-oath-item .rich-area:hover {
+  border-color: rgba(0,0,0,0.1);
+}
+.mail-oath-item .rich-area:focus {
+  background: #fffdf9;
+  box-shadow: inset 0 0 0 2px rgba(255,125,0,0.25);
+  border-color: transparent;
+}
+
+/* ── Oath remove button ──────────────────────────────────── */
+.oath-item-remove {
+  flex-shrink: 0;
+  opacity: 0;
+  color: #999;
+  padding: 4px 6px !important;
+  align-self: flex-start;
+  margin-top: 4px;
+  transition: opacity 0.15s;
+}
+.mail-oath-item:hover .oath-item-remove {
+  opacity: 1;
+}
+.oath-item-remove:hover {
+  color: #E23009 !important;
+  background: rgba(226,48,9,0.08) !important;
+  opacity: 1;
+}
+
+.btn-add-oath {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 16px 8px;
+  padding: 6px 12px;
+  border: 1.5px dashed #FF7D00;
+  border-radius: 5px;
+  background: transparent;
+  color: #FF7D00;
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.btn-add-oath:hover { background: #fff0e0; }
+
+/* ── Approve button preview ──────────────────────────────── */
+.mail-approve-preview {
+  padding: 12px 16px;
+  text-align: center;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.mail-approve-btn {
+  background-color: #FF7D00;
+  color: #fff;
+  border: 1px solid #e4e4e4;
+  padding: 8px 24px;
+  border-radius: 3px;
+  cursor: default;
+  width: 200px;
+  font-weight: 700;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* ── SMS toggle hint ─────────────────────────────────────── */
+.mail-sms-toggle-row {
+  padding: 10px 16px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.mail-preview-sms-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #555;
+  cursor: pointer;
+  user-select: none;
+}
+.mail-preview-sms-toggle input {
+  cursor: pointer;
+  accent-color: #FF7D00;
+}
+
+/* ── Rich text editor ────────────────────────────────────── */
+.rich-editor {
+  display: flex;
+  flex-direction: column;
+}
+
+.rich-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 8px;
+  background: #f5f5f5;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  flex-wrap: wrap;
+}
+
+.rich-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  color: #333;
+  transition: background 0.1s, color 0.1s;
+  flex-shrink: 0;
+}
+.rich-toolbar-btn:hover {
+  background: #fff0e0;
+  color: #FF7D00;
+}
+.rich-toolbar-btn--active {
+  background: #FF7D00;
+  color: #fff;
+}
+
+.rich-toolbar-sep {
+  width: 1px;
+  height: 20px;
+  background: rgba(0,0,0,0.12);
+  margin: 0 3px;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+/* Variable picker dropdown */
+.rich-var-wrapper {
+  position: relative;
+}
+
+.rich-var-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 200;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  min-width: 200px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.rich-var-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 7px 12px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.rich-var-item:hover {
+  background: #FAF3EB;
+}
+
+.rich-var-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #000;
+}
+
+.rich-var-chip {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: #FF7D00;
+  background: #fff0e0;
+  border: 1px solid rgba(255,125,0,0.25);
+  border-radius: 3px;
+  padding: 1px 5px;
+  align-self: flex-start;
+}
+
+.rich-var-type {
+  font-size: 10px;
+  color: #999;
+  text-transform: uppercase;
+}
+
+/* contentEditable area */
+.rich-area {
+  display: block;
+  min-height: 80px;
+  padding: 12px;
+  outline: none;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #000;
+  background: #fff;
+}
+.rich-area:focus {
+  box-shadow: inset 0 0 0 2px rgba(255,125,0,0.3);
+}
+.rich-area:empty::before {
+  content: attr(data-placeholder);
+  color: #bbb;
+  pointer-events: none;
+}
+
+/* Template variable chips inside editor */
+.rich-area .tpl-var,
+.tpl-var {
+  display: inline-block;
+  background: #fff0e0;
+  color: #FF7D00;
+  border: 1px solid rgba(255,125,0,0.3);
+  border-radius: 3px;
+  padding: 0 5px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  white-space: nowrap;
+  line-height: 1.6;
+  cursor: default;
+}
+
+/* ── Oath list editor ────────────────────────────────────── */
+.oath-list-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+
+.oath-item-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.oath-item-number {
+  flex-shrink: 0;
+  width: 22px;
+  padding-top: 10px;
+  font-size: 12px;
+  color: #999;
+  text-align: right;
+  font-weight: 700;
+}
+
+.oath-item-area-wrap {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.oath-item-area-wrap .rich-area {
+  min-height: 40px;
+  padding: 8px 10px;
+}
+
+.oath-item-remove {
+  flex-shrink: 0;
+  color: #999;
+  padding: 6px !important;
+  align-self: flex-start;
+  margin-top: 4px;
+}
+.oath-item-remove:hover {
+  color: #E23009 !important;
+  background: rgba(226,48,9,0.08) !important;
+}
+
+.btn-add-oath {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1.5px dashed #FF7D00;
+  border-radius: 5px;
+  background: transparent;
+  color: #FF7D00;
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.1s;
+  margin-top: 4px;
+}
+.btn-add-oath:hover {
+  background: #fff0e0;
+}
+
+/* ── Preview panel ───────────────────────────────────────── */
+.mail-preview-panel {
+  flex: 0 0 42%;
+  border-left: 1px solid rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.mail-preview-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #fff;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.mail-preview-toggle {
+  margin: 0 !important;
+}
+
+.mail-preview-sms-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #555;
+  cursor: pointer;
+  user-select: none;
+}
+.mail-preview-sms-toggle input {
+  cursor: pointer;
+  accent-color: #FF7D00;
+}
+
+.mail-preview-subject {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #fff;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.mail-preview-subject-label {
+  color: #777;
+  font-weight: 700;
+}
+.mail-preview-subject-value {
+  color: #000;
+  font-weight: 500;
+}
+
+.mail-preview-frame {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+.mail-preview-frame > div {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 5px;
+  padding: 24px;
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Variable preview badges */
+.preview-var {
+  background: #fff0e0;
+  color: #FF7D00;
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  white-space: nowrap;
+}
+.preview-var-resolved {
+  color: #FF7D00;
+  font-weight: 500;
+}
+
+/* ── Dark mode ───────────────────────────────────────────── */
+.app--dark .mail-apk-toolbar {
+  background: var(--dm-surface);
+  border-color: var(--dm-border);
+}
+
+.app--dark .mail-apk-subject-input {
+  background: var(--dm-surface2);
+  border-color: var(--dm-border);
+  color: var(--dm-text);
+}
+
+.app--dark .mail-apk-section {
+  background: var(--dm-surface);
+  border-color: var(--dm-border);
+}
+
+.app--dark .mail-apk-section-header {
+  background: var(--dm-surface2);
+  border-color: var(--dm-border);
+}
+
+.app--dark .mail-apk-section-label {
+  color: var(--dm-text2);
+}
+
+.app--dark .mail-apk-condition-badge {
+  background: var(--dm-surface);
+  border-color: var(--dm-border);
+  color: var(--dm-text3);
+}
+
+.app--dark .rich-toolbar {
+  background: var(--dm-surface2);
+  border-color: var(--dm-border);
+}
+
+.app--dark .rich-toolbar-btn {
+  color: var(--dm-text2);
+}
+.app--dark .rich-toolbar-btn:hover {
+  background: rgba(255,125,0,0.15);
+  color: #FF9B00;
+}
+
+.app--dark .rich-area {
+  background: var(--dm-surface);
+  color: var(--dm-text);
+}
+
+.app--dark .tpl-var {
+  background: rgba(255,125,0,0.15);
+  color: #FF9B00;
+  border-color: rgba(255,125,0,0.3);
+}
+
+.app--dark .rich-var-dropdown {
+  background: var(--dm-surface);
+  border-color: var(--dm-border);
+}
+.app--dark .rich-var-item:hover {
+  background: var(--dm-surface2);
+}
+.app--dark .rich-var-label {
+  color: var(--dm-text);
+}
+
+.app--dark .mail-editor-toolbar {
+  background: var(--dm-surface);
+  border-color: var(--dm-border);
+}
+
+.app--dark .mail-apk-email-canvas {
+  background: var(--dm-bg);
+}
+
+.app--dark .mail-apk-email-frame {
+  background: var(--dm-surface);
+  border-color: var(--dm-border);
+}
+
+.app--dark .mail-inline-section {
+  border-color: var(--dm-border);
+}
+
+.app--dark .mail-inline-label {
+  color: var(--dm-text3);
+}
+
+.app--dark .mail-inline-section .rich-area {
+  color: var(--dm-text);
+  background: transparent;
+}
+.app--dark .mail-inline-section .rich-area:focus {
+  background: rgba(255,125,0,0.05);
+}
+
+.app--dark .mail-conditional-banner {
+  border-color: var(--dm-border);
+}
+
+.app--dark .mail-conditional-indicator {
+  color: var(--dm-text2);
+}
+
+.app--dark .mail-oath-item .rich-area {
+  color: var(--dm-text);
+}
+.app--dark .mail-oath-item .rich-area:hover {
+  border-color: var(--dm-border);
+}
+.app--dark .mail-oath-item .rich-area:focus {
+  background: rgba(255,125,0,0.05);
+}
+
+.app--dark .mail-sms-toggle-row {
+  border-color: var(--dm-border);
+}
+
+.app--dark .mail-preview-sms-toggle {
+  color: var(--dm-text2);
+}
+
+/* ===== Mail RODO ===== */
+
+/* RODO toolbar: lock to same height as APK toolbar (which is taller due to view-toggle margins) */
+.mail-apk-toolbar--rodo {
+  flex-wrap: nowrap;
+  min-height: 60px;
+}
+
+/* Canvas wrapper: same as mail-apk-email-canvas but with relative positioning for the overlay bar */
+.rodo-canvas-wrapper {
+  position: relative;
+}
+
+/* Left bar floats absolutely — does not affect flow or frame centering */
+.rodo-left-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 172px;
+  z-index: 5;
+  background: #FAF3EB;
+  border-right: 1px solid rgba(236,227,218,1);
+  padding: 16px 12px;
+  overflow-y: auto;
+}
+.rodo-left-bar-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #999;
+  margin-bottom: 12px;
+}
+.rodo-left-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  padding: 6px 0;
+  user-select: none;
+  line-height: 1.3;
+}
+.rodo-left-toggle--sub {
+  padding-left: 16px;
+  color: #666;
+}
+.rodo-left-toggle input[type="checkbox"] {
+  accent-color: #FF7D00;
+  flex-shrink: 0;
+}
+
+/* dark mode */
+.app--dark .rodo-left-bar { background: var(--dm-surface); border-color: var(--dm-border); }
+.app--dark .rodo-left-bar-title { color: var(--dm-text-secondary); }
+.app--dark .rodo-left-toggle { color: var(--dm-text); }
+.app--dark .rodo-left-toggle--sub { color: var(--dm-text-secondary); }
+
+.rodo-clause-block {
+  border: 1.5px solid #FF7D00;
+  border-radius: 5px;
+  background: #FFF8F0;
+  margin-bottom: 4px;
+  overflow: hidden;
+}
+.rodo-clause-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 12px;
+  background: rgba(255,125,0,0.1);
+  border-bottom: 1px solid rgba(255,125,0,0.2);
+}
+.rodo-clause-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #FF7D00;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.rodo-clause-filename {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: #999;
+}
+.rodo-channel-rows {
+  padding: 6px 12px;
+  color: #555;
+  font-size: 14px;
+}
+.rodo-channel-row {
+  margin: 2px 0;
+}
+.rodo-preview-toggles {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.rodo-extra-clauses {
+  background: #f9f9f9;
+  border-top: 1px solid rgba(0,0,0,0.08);
+  padding: 12px 24px;
+}
+.rodo-extra-clauses-header {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #999;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+.rodo-extra-clause-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.rodo-extra-clause-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #555;
+  min-width: 100px;
+}
+.rodo-extra-clause-filename {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: #999;
+  min-width: 140px;
+}
+.rodo-extra-clause-input {
+  flex: 1;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 5px;
+  font-size: 12px;
+  font-family: inherit;
+}
+.rodo-extra-clause-input:focus {
+  outline: none;
+  border-color: #FF7D00;
+  box-shadow: 0 0 0 2px rgba(255,125,0,0.15);
+}
+/* dark mode */
+.app--dark .rodo-clause-block { background: rgba(255,125,0,0.05); border-color: rgba(255,125,0,0.5); }
+.app--dark .rodo-extra-clauses { background: var(--dm-surface); border-color: var(--dm-border); }
+.app--dark .rodo-extra-clause-label { color: var(--dm-text-secondary); }
+.app--dark .rodo-extra-clause-input { background: var(--dm-surface2); border-color: var(--dm-border); color: var(--dm-text); }

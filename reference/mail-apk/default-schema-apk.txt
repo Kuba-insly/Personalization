@@ -1,0 +1,58 @@
+{
+            "broker_id": null,
+            "service_tag": "idd",
+            "send_channel": "email",
+            "subject": "Dokumenty - APK",
+            "body": "<html lang=\"pl\">   \n      <head>      \n                <title>Dokumenty - APK</title>      \n      </head>   \n      <body>      <div id=\"content\">         <strong>Dzień dobry!</strong> <br>\n<p>Uprzejmie dziękujemy za skorzystanie z usług agencji ubezpieczeniowej {{.BrokerName}}.</p></br>\n         {{if .Refusal}}         <p>W załączeniu przesyłamy zapis ustaleń z rozmowy, w trakcie której zadeklarował Pan chęć odmowy przeprowadzenia badania Pana/Pani wymagań i potrzeb w zakresie ochrony ubezpieczeniowej.</p>\n          <p>W odpowiedzi na ten mail można zadać pytania, jeśli niezbędne są dodatkowe informacje lub ma Pani/Pan uwagi do zapisu czy poniższych oświadczeń.</p>\n          <p>W załączeniu przesyłamy także Informacje o agencie ubezpieczeniowym oraz upoważnienie dla osoby fizycznej do wykonywania czynności agencyjnych na rzecz agencji {{.BrokerName}}.</p>\n          {{else}}               <p>\n Pan/Pani {{.UserName}} przeprowadził/a badanie Pana/Pani potrzeb celem możliwie najlepszego dopasowania produktu. W załączeniu zapis preferencji i oczekiwań przygotowany na podstawie przeprowadzonej rozmowy.</p></br>       \n\n              <p>  W odpowiedzi na ten mail można zadać pytania, jeśli niezbędne są dodatkowe informacje lub ma Pani/Pan uwagi do zapisu przeprowadzonego badania potrzeb.</p>         \n               <p>W załączeniu przesyłamy Informacje o agencie ubezpieczeniowym oraz upoważnienie dla osoby fizycznej do wykonywania czynności agencyjnych na rzecz agencji {{.BrokerName}}</p>         \n          {{end}}{{if not .SmsSent}}<p>Klikając w poniższy przycisk potwierdza Pan/Pani oświadczenia:</p>\n{{end}}   {{if .Refusal}}                <ol>            \n                    <li>Oświadczam, że Agent {{.UserName}} poinformował mnie, że obowiązkiem Agenta jest przedstawienie produktu zgodnego z moimi wymaganiami i potrzebami, które powinny być szczegółowo omówione podczas rozmowy z Agentem, a istotne dla mnie elementy powinny zostać odzwierciedlone w treści niniejszego dokumentu - wiedząc to samodzielnie i jednoznacznie odmawiam przeprowadzenia takiej analizy, mając świadomość, że wskutek tego zaoferowany produkt może nie być w pełni dopasowany do moich potrzeb i wymagań.</li>            \n                    <li>Oświadczam, że zostałem/am poinformowany/ana o obowiązku prawnym Agenta w postaci konieczności przekazania w zrozumiałej dla mnie formie obiektywnych (jasnych, rzetelnych i niewprowadzających w błąd) informacji o produkcie ubezpieczeniowym (w tym: OWU oraz karty produktu)</li>            \n                    <li>Potwierdzam, że Agent udostępnił mi informacje o agencie ubezpieczeniowym (pełnomocnictwo, upoważnienie, współpracujące zakłady ubezpieczeń, nazwa agenta oraz numer wpisu, charakter otrzymanego wynagrodzenia) oraz o możliwości złożenia reklamacji, wniesienia skargi oraz pozasądowego rozwiązywania sporów</li>            \n                    <li>Potwierdzam udostępnienie klauzul informacyjnych dotyczących przetwarzania danych osobowych przez zakłady ubezpieczeń oraz Agenta w celu poznania oferty i zawarcia umowy ubezpieczenia</li>            \n                    <li>Potwierdzam wyrażenie zgody na wysyłanie wszelkich informacji wymaganych prawem, m.in.: OWU, Karta Produktu, informacja o Agencie i prawie odstąpienia od umowy oraz złożenia reklamacji na podany adres e-mail</li>            \n              </ol>         {{else}}               <ol>            \n                     <li>Oświadczam, że Agent {{.UserName}} poinformował mnie, że obowiązkiem Agenta jest przedstawienie produktu zgodnego z moimi wymaganiami i potrzebami, które powinny być szczegółowo omówione podczas rozmowy z Agentem, a istotne dla mnie elementy powinny zostać odzwierciedlone w treści niniejszego dokumentu</li>            \n                     <li>Oświadczam, że zostałem/am poinformowany/ana o obowiązku prawnym Agenta w postaci konieczności przekazania w zrozumiałej dla mnie formie obiektywnych (jasnych, rzetelnych i niewprowadzających w błąd) informacji o produkcie ubezpieczeniowym (w tym: OWU oraz karty produktu)</li>            \n                     <li>Potwierdzam, że Agent udostępnił mi informacje o agencie ubezpieczeniowym (pełnomocnictwo, upoważnienie, współpracujące zakłady ubezpieczeń, nazwa agenta oraz numer wpisu, charakter otrzymanego wynagrodzenia) oraz o możliwości złożenia reklamacji, wniesienia skargi oraz pozasądowego rozwiązywania sporów</li>            \n                     <li>Potwierdzam udostępnienie klauzul informacyjnych dotyczących przetwarzania danych osobowych przez zakłady ubezpieczeń oraz Agenta w celu poznania oferty i zawarcia umowy ubezpieczenia</li>            \n                     <li>Potwierdzam wyrażenie zgody na wysyłanie wszelkich informacji wymaganych prawem, m.in.: OWU, Karta Produktu, informacja o Agencie i prawie odstąpienia od umowy oraz złożenia reklamacji na podany adres e-mail</li>            \n   </ol>         {{end}}            </div>  {{if not .SmsSent}}<a href=\"{{.ApproveUrl}}\" target=\"_blank\" style=\"display:none;\" rel=\"nofollow noopener\">\n    <button style=\"background-color: #FF7D00;color: #fff;border: 1px solid #e4e4e4;padding: 8px;border-radius: 3px;cursor: pointer; position: relative; left: 35%; width:200px;\"><b>Akceptuje</b></button></a>\n{{end}}<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">        <tr>          <td style=\"text-align: left; padding: 10px;\">            <strong style=\"margin: 0;\">Z poważaniem,</strong>            <p style=\"margin: 0;\">{{.UserName}}</p>            <p style=\"margin: 0;\">{{.BrokerName}}</p>          </td>        </tr>      </table></body>   \n</html>\n",
+            "required_vars": [
+                {
+                    "name": "ApproveUrl",
+                    "type": "any"
+                }
+            ],
+            "allowed_vars": [
+                {
+                    "name": "EmailContent",
+                    "type": "any"
+                },
+                {
+                    "name": "Name",
+                    "type": "any"
+                },
+                {
+                    "name": "Email",
+                    "type": "any"
+                },
+                {
+                    "name": "Phone",
+                    "type": "any"
+                },
+                {
+                    "name": "Code",
+                    "type": "any"
+                },
+                {
+                    "name": "UserName",
+                    "type": "any"
+                },
+                {
+                    "name": "BrokerName",
+                    "type": "any"
+                },
+                {
+                    "name": "CreatedAt",
+                    "type": "any"
+                },
+                {
+                    "name": "Refusal",
+                    "type": "any"
+                },
+                {
+                    "name": "SmsSent",
+                    "type": "bool"
+                }
+            ],
+            "documents": [],
+            "message": "",
+            "all_vars": null
+        }

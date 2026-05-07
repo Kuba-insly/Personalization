@@ -1,0 +1,74 @@
+{
+            "broker_id": "xx",
+            "service_tag": "idd",
+            "send_channel": "email",
+            "subject": "Dokumenty - APK",
+            "body": "<html lang=\"pl\">   \n      <head>      \n                <title>Dokumenty - APK</title>      \n      </head>   \n      <body>      <div id=\"content\">         Dzień dobry! \n<p>Uprzejmie dziękujemy za skorzystanie z usług Agencji Ubezpieczeń IDEM.</p>\n         {{if .Refusal}}         <p>W załączeniu przesyłamy zapis ustaleń z rozmowy, w trakcie której zadeklarował Pan chęć odmowy przeprowadzenia badania Pana/Pani wymagań i potrzeb w zakresie ochrony ubezpieczeniowej.</p>\n          <p>W odpowiedzi na ten mail można zadać pytania, jeśli niezbędne są dodatkowe informacje lub ma Pani/Pan uwagi do zapisu czy poniższych oświadczeń.</p>\n          <p>W załączeniu przesyłamy także Informacje o agencie ubezpieczeniowym oraz upoważnienie dla osoby fizycznej do wykonywania czynności agencyjnych na rzecz agencji {{.BrokerName}}.</p>\n          {{else}}               <p>\n Pan/Pani {{.UserName}} przeprowadził/a badanie Pana/Pani potrzeb i wymagań celem możliwie najlepszego dopasowania produktu ubezpieczeniowego. W załączeniu jest zapis preferencji i oczekiwań przygotowany na podstawie przeprowadzonej rozmowy. W odpowiedzi na ten mail można zadać pytania, jeśli niezbędne są dodatkowe informacje lub ma Pani/Pan uwagi do zapisu przeprowadzonego badania potrzeb i wymagań. </p>    \n           <p>W załączeniu przesyłamy ponadto: <br>- Informacje o Dystrybutorze Ubezpieczeń <br>- Oświadczenie Administratora Danych Osobowych</p>\n  <p>Regulacje prawne nakładają na nas pozyskanie stosownych zgód.</p>       \n          {{end}}        {{if not .SmsSent}}                       <p><b>Klikając w poniższy przycisk AKCEPTUJĘ potwierdza Pan/Pani oświadczenia:</b></p>         \n    {{end}}    {{if .Refusal}}                <ol>            \n                    <li>Oświadczam, że zostałem poinformowany o obowiązku prawnym Agenta w postaci przedstawienia produktu zgodnego z wymaganiami i potrzebami Klienta, odzwierciedlonymi w udokumentowanej formie analizy potrzeb Klienta i odmówiłem przeprowadzenia takiej analizy, mając świadomość, że skutkiem tego zaoferowany produkt może nie być w pełni dopasowany do moich potrzeb i wymagań</li>            \n                    <li>Oświadczam, że zostałem poinformowany o obowiązku prawnym Agenta w postaci konieczności przekazania w zrozumiałej dla Klienta formie obiektywnych (jasnych, rzetelnych i niewprowadzających w błąd) informacji o produkcie ubezpieczeniowym (w tym: OWU oraz karty produktu)</li>            \n                    <li>Potwierdzam, że Agent udostępnił mi informacje o agencie ubezpieczeniowym (pełnomocnictwo, upoważnienie, współpracujące zakłady ubezpieczeń, nazwa agenta oraz numer wpisu, charakter otrzymanego wynagrodzenia) oraz o możliwości złożenia reklamacji, wniesienia skargi oraz pozasądowego rozwiązywania sporów</li>            \n                    <li>Potwierdzam udostępnienie klauzul informacyjnych dotyczących przetwarzania danych osobowych przez zakłady ubezpieczeń oraz Agenta w celu poznania oferty i zawarcia umowy ubezpieczenia</li>            \n                    <li>Potwierdzam wyrażenie zgody na wysyłanie wszelkich informacji wymaganych prawem, m.in. : OWU, Karta Produktu, informacja o Agencie i prawie odstąpienia od umowy oraz złożenia reklamacji na podany adres e-mail.</li>            \n              </ol>         {{else}}               <ol>            \n                     <li>Oświadczam, że Agent poinformował mnie, że obowiązkiem Agenta jest przedstawienie produktu zgodnego z moimi wymaganiami i potrzebami, które powinny być szczegółowo omówione podczas rozmowy z Agentem, a istotne dla mnie elementy powinny zostać odzwierciedlone w treści niniejszego dokumentu</li>            \n                     <li>Oświadczam, że zostałem/am poinformowany/ana o obowiązku prawnym Agenta w postaci konieczności przekazania w zrozumiałej dla mnie formie obiektywnych (jasnych, rzetelnych i niewprowadzających w błąd) informacji o produkcie ubezpieczeniowym (w tym: OWU oraz karty produktu)</li>            \n                     <li>Potwierdzam, że Agent udostępnił mi informacje o agencie ubezpieczeniowym (pełnomocnictwo, upoważnienie, współpracujące zakłady ubezpieczeń, nazwa agenta oraz numer wpisu, charakter otrzymanego wynagrodzenia) oraz o możliwości złożenia reklamacji, wniesienia skargi oraz pozasądowego rozwiązywania sporów. Przyjmuję do wiadomości, iż pełnomocnictwa udzielone agencji IDEM przez zakłady ubezpieczeń dostępne są do wglądu w biurach agencji oraz pod adresem: <a href=\"https://idem.pl/informacje_o_dystrybutorze\" rel=\"nofollow\">https://idem.pl/informacje_o_dystrybutorze</a></li>            \n                     <li>Potwierdzam udostępnienie klauzul informacyjnych dotyczących przetwarzania danych osobowych przez zakłady ubezpieczeń oraz Agenta w celu poznania oferty i zawarcia umowy ubezpieczenia</li>            \n                     <li>Potwierdzam wyrażenie zgody na wysyłanie wszelkich informacji wymaganych prawem, m.in.: OWU, Karta Produktu, informacja o Agencie i prawie odstąpienia od umowy oraz złożenia reklamacji na podany adres e-mail</li>   </ol>         {{end}}            </div>  {{if not .SmsSent}}    <a href=\"{{.ApproveUrl}}\" target=\"_blank\" style=\"display:none;\" rel=\"nofollow noopener\">\n    <button style=\"background-color: #FF7D00;color: #fff;border: 1px solid #e4e4e4;padding: 8px;border-radius: 3px;cursor: pointer; position: relative; left: 35%; width:200px;\"><b>AKCEPTUJĘ</b></button></a>\n  {{end}}      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">        <tr>          <td style=\"text-align: left; padding: 10px;\">       <br>     Z poważaniem,            <p>{{.UserName}}</p>       <p>Agencja Ubezpieczeń IDEM <br>05-825 Grodzisk Maz., pl. Wolności 3, tel.: 508 510 463<br>05-200 Wołomin, ul. Wileńska 36a, tel.: 534 654 970<br><a href=\"www.idem.pl\" rel=\"nofollow\">www.idem.pl</a> </p>          </td>        </tr>      </table></body>   \n</html>\n",
+            "required_vars": [
+                {
+                    "name": "ApproveUrl",
+                    "type": "any"
+                }
+            ],
+            "allowed_vars": [
+                {
+                    "name": "EmailContent",
+                    "type": "any"
+                },
+                {
+                    "name": "Name",
+                    "type": "any"
+                },
+                {
+                    "name": "Email",
+                    "type": "any"
+                },
+                {
+                    "name": "Phone",
+                    "type": "any"
+                },
+                {
+                    "name": "Code",
+                    "type": "any"
+                },
+                {
+                    "name": "UserName",
+                    "type": "any"
+                },
+                {
+                    "name": "BrokerName",
+                    "type": "any"
+                },
+                {
+                    "name": "CreatedAt",
+                    "type": "any"
+                },
+                {
+                    "name": "Refusal",
+                    "type": "any"
+                },
+                {
+                    "name": "SmsSent",
+                    "type": "bool"
+                }
+            ],
+            "documents": [
+                {
+                    "ID": "c12b2a08-917a-4817-9496-bfc7c33d2a2f",
+                    "ReferenceID": "c55365a2-24f9-4aeb-b42e-caa22764af10",
+                    "TypeID": "00000000-0000-0000-0000-000000000000",
+                    "Properties": {
+                        "title": "Informacja o dystrybutorze ubezpieczen"
+                    },
+                    "FileName": "Informacja_o_dystrybutorze_ubezpieczen.pdf",
+                    "CreatedAt": "2026-02-17T10:44:12.727094Z",
+                    "CreatedBy": "b02acc13-1fac-46b6-957c-4c841a93ea79",
+                    "UpdatedAt": "2026-02-17T10:45:41.401974Z",
+                    "UpdatedBy": "b02acc13-1fac-46b6-957c-4c841a93ea79",
+                    "DeletedAt": "0001-01-01T00:00:00Z",
+                    "DeletedBy": "00000000-0000-0000-0000-000000000000"
+                }
+            ],
+            "message": "",
+            "all_vars": null
+        }

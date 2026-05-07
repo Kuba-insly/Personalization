@@ -205,12 +205,29 @@ Projekt używa tokenów z oficjalnego Insly Design System v1.3.
 | Shadow modal | `-6px 6px 0 0 rgba(148,119,90,0.24)` |
 | Font | `'Museo Sans'` (300/500/700) ładowany z Google Fonts |
 
+## Insly Design System — assety referencyjne
+
+Lokalizacja: `C:\Users\JakubMąkolski\OneDrive - Insly OÜ\Töölaud\Claude\Desing\poland-broker-mockups`
+
+| Folder | Zawartość |
+|--------|-----------|
+| `DesignSystem/insly-design-system.jsx` | Pełna biblioteka komponentów DS (221KB) — tokeny kolorów, spacing, typography |
+| `CEPiK/src/styles/theme.css` | Tokeny CSS: kolory (light/dark), spacing (xs=4px…xxl=40px), border-radius, font sizes |
+| `HH/src/styles/globals.css` | Dodatkowe stany buttonów, kolory hover/disabled |
+
+Kluczowe wymiary z DS:
+- Button heights: sm=32px, md=40px, lg=48px
+- Input height: 40px (standard)
+- Modal width: 480px
+- Font sizes: label=10px/700, small=12px/500, base=14px/500
+- Spacing: xs=4px, sm=8px, md=16px, lg=24px, xl=32px
+
 ## Moduły (zakładki w UI)
 
 | Moduł | Status |
 |-------|--------|
 | IDD | Zaimplementowany |
-| Mail APK | Placeholder |
+| Mail APK | W implementacji |
 | Mail RODO | Placeholder |
 | Wydruk APK | Placeholder |
 | Wydruk RODO | Placeholder |

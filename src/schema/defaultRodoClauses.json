@@ -1,0 +1,7 @@
+{
+    "dataProcessing": "Oświadczam, że:<br>1. Przekazano mi informacje o administratorze moich danych osobowych (celach i zasadach ich przetwarzania oraz należnych prawach).<br>2. Udostępniono mi informacje o dystrybutorze ubezpieczeń, agencji {{$.BrokerName}}<br>3. Udostępniono mi do wglądu upoważnienie dla Osoby Fizycznej Wykonującej Czynności Agencyjne - {{$.UserName}}<br>4. Miałem możliwość zapoznać się z pełnomocnictwami udzielonymi agencji {{$.BrokerName}} przez zakłady ubezpieczeń, jakie reprezentuje.",
+    "marketing": "Wyraziłem/-am zgodę na przetwarzanie przez {{$.BrokerName}} moich danych osobowych w celach marketingowych wraz z używaniem automatycznych systemów wywołujących oraz telekomunikacyjnych urządzeń końcowych do celów przesyłania informacji handlowej, w tym marketingu bezpośredniego. Mam świadomość tego, że podanie danych osobowych jest dobrowolne, a zgodę mogę w każdej chwili wycofać, zwracając się ze stosownym żądaniem na adres e-mail: {{$.UserEmail}}. Wycofanie zgody nie wpływa na zgodność z prawem przetwarzania, którego dokonano na podstawie zgody przed jej wycofaniem. Wybrałem / -am następujące kanały kontaktu: ",
+    "email": "Email",
+    "phone": "",
+    "sms": ""
+}

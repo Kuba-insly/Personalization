@@ -14,9 +14,13 @@ import {
   useDraggable,
 } from '@dnd-kit/core'
 import { useFormState } from './hooks/useFormState'
+import { useMailApkState } from './hooks/useMailApkState'
+import { useMailRodoState } from './hooks/useMailRodoState'
 import FormEditor from './components/FormEditor'
 import JsonImport from './components/JsonImport'
 import PlaceholderModule from './components/PlaceholderModule'
+import MailApkEditor from './components/MailApkEditor'
+import MailRodoEditor from './components/MailRodoEditor'
 import './assets/styles.css'
 
 const TOOLBOX_ITEMS = [
@@ -78,18 +82,36 @@ function ToolboxItem({ id, label, icon }) {
 
 export default function App() {
   const {
-    formData, isDirty,
-    loadForm, loadDefault,
+    formData, isDirty: iddIsDirty,
+    loadForm, loadDefault: iddLoadDefault,
     updateField, addField, removeField, moveField,
-    undoLast, canUndo, resetToOriginal, markSaved,
+    undoLast: iddUndoLast, canUndo: iddCanUndo,
+    resetToOriginal: iddResetToOriginal, markSaved,
   } = useFormState()
 
+  const {
+    subject: apkSubject, sections: apkSections, isDirty: apkIsDirty, canUndo: apkCanUndo,
+    loadMailApk, loadDefault: apkLoadDefault,
+    updateSubject: apkUpdateSubject, updateSection: apkUpdateSection, updateOathItems: apkUpdateOathItems,
+    undoLast: apkUndoLast, resetToOriginal: apkResetToOriginal,
+    getExportData: apkGetExportData, allowedVars: apkAllowedVars,
+  } = useMailApkState()
+
+  const {
+    subject: rodoSubject, sections: rodoSections, clauses: rodoClauses,
+    isDirty: rodoIsDirty, canUndo: rodoCanUndo,
+    loadMailRodo, updateSubject: rodoUpdateSubject,
+    updateSection: rodoUpdateSection, updateClause: rodoUpdateClause,
+    undoLast: rodoUndoLast, resetToOriginal: rodoResetToOriginal,
+    getExportData: rodoGetExportData, allowedVars: rodoAllowedVars,
+  } = useMailRodoState()
+
   const [showImport, setShowImport] = useState(false)
-  const [activeDrag, setActiveDrag] = useState(null) // { label, icon } for overlay
-  const [exportStep, setExportStep] = useState('') // '' | 'translating' | 'packing'
+  const [activeDrag, setActiveDrag] = useState(null)
+  const [exportStep, setExportStep] = useState('')
   const [urlError, setUrlError] = useState(false)
-  const [view, setView] = useState('full') // 'full' | 'refusal'
-  const [module, setModule] = useState('idd') // 'idd' | 'mail-apk' | 'mail-rodo' | 'print-apk' | 'print-rodo' | 'print-offer'
+  const [view, setView] = useState('full')
+  const [module, setModule] = useState('idd')
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('insly-dark-mode') === 'true'
   })
@@ -136,9 +158,7 @@ export default function App() {
   function handleDragEnd({ active, over }) {
     setActiveDrag(null)
     if (!over) return
-
     if (String(active.id).startsWith('toolbox:')) {
-      // toolbox drops only work in the full IDD view
       if (view !== 'full') return
       const fieldType = String(active.id).replace('toolbox:', '')
       addField(createNewField(fieldType), over.id)
@@ -159,7 +179,6 @@ export default function App() {
       const data = await res.json()
       if (data.responseStatus === 200) {
         const t = data.responseData.translatedText || ''
-        // MyMemory returns "PLEASE SELECT..." when it can't translate
         return t.startsWith('PLEASE SELECT') ? '' : t
       }
     } catch {}
@@ -167,37 +186,58 @@ export default function App() {
   }
 
   async function handleExport() {
-    if (!formData) return
-    if (!siteSlug) { setUrlError(true); return }
+    const apkExportData = apkGetExportData()
+    const rodoExportData = rodoGetExportData()
+    const includeMailApk = !!(apkExportData && apkExportData.isDirty)
+    const includeRodo = !!(rodoExportData && rodoExportData.isDirty)
+    const includeIdd = !!formData && (iddIsDirty || module === 'idd')
+
+    if (!includeIdd && !includeMailApk && !includeRodo) return
+    if (includeIdd && !siteSlug) { setUrlError(true); return }
 
     try {
-      // Collect unique Polish labels that need translation
       setExportStep('translating')
-      const toTranslate = new Set()
-      for (const field of formData.fields) {
-        if (field._isNew || field._titleChanged) toTranslate.add(field.title)
-        for (const opt of field.options || []) {
-          if (opt.customLabel !== undefined) toTranslate.add(opt.customLabel)
+      let enMap = {}
+
+      if (includeIdd && formData) {
+        const toTranslate = new Set()
+        for (const field of formData.fields) {
+          if (field._isNew || field._titleChanged) toTranslate.add(field.title)
+          for (const opt of field.options || []) {
+            if (opt.customLabel !== undefined) toTranslate.add(opt.customLabel)
+          }
+        }
+        const labels = [...toTranslate]
+        const translated = await Promise.all(labels.map(translatePL))
+        enMap = Object.fromEntries(labels.map((l, i) => [l, translated[i]]))
+      }
+
+      setExportStep('packing')
+      const zip = new JSZip()
+      const date = new Date().toISOString().split('T')[0]
+
+      if (includeIdd && formData && siteSlug) {
+        const { jsonStr, translationsStr } = exportIdd(formData, siteSlug, enMap)
+        zip.file('idd-schema.json', jsonStr)
+        if (translationsStr) zip.file('translations.txt', translationsStr)
+      }
+
+      if (includeMailApk && apkExportData) {
+        zip.file('mail-apk-schema.json', apkExportData.jsonStr)
+      }
+
+      if (includeRodo && rodoExportData) {
+        zip.file('mail-rodo-schema.json', rodoExportData.schemaJson)
+        for (const f of rodoExportData.clauseFiles) {
+          zip.file(f.filename, f.json)
         }
       }
 
-      const labels = [...toTranslate]
-      const translated = await Promise.all(labels.map(translatePL))
-      const enMap = Object.fromEntries(labels.map((l, i) => [l, translated[i]]))
-
-      setExportStep('packing')
-      const { jsonStr, translationsStr } = exportIdd(formData, siteSlug, enMap)
-      const zip = new JSZip()
-      const date = new Date().toISOString().split('T')[0]
-      zip.file('idd-schema.json', jsonStr)
-      if (translationsStr) {
-        zip.file('translations.txt', translationsStr)
-      }
       const blob = await zip.generateAsync({ type: 'blob' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `idd-${siteSlug}-${date}.zip`
+      a.download = `insly-${siteSlug || 'personalizacja'}-${date}.zip`
       a.click()
       URL.revokeObjectURL(url)
       markSaved()
@@ -232,35 +272,72 @@ export default function App() {
                 {darkMode ? '☀' : '☾'}
               </button>
             )}
-            {isDirty && (
+
+            {/* IDD-specific actions */}
+            {module === 'idd' && iddIsDirty && (
               <span className="dirty-badge">● Niezapisane zmiany</span>
             )}
-            {canUndo && (
-              <button className="btn btn-ghost btn-sm" onClick={undoLast} title="Cofnij ostatnią zmianę">
+            {module === 'idd' && iddCanUndo && (
+              <button className="btn btn-ghost btn-sm" onClick={iddUndoLast} title="Cofnij ostatnią zmianę">
                 ↩ Cofnij
               </button>
             )}
-            {isDirty && (
+            {module === 'idd' && iddIsDirty && (
               <button className="btn btn-ghost btn-sm" onClick={() => {
-                if (confirm('Przywrócić szablon do stanu sprzed edycji? Wszystkie zmiany zostaną utracone.')) resetToOriginal()
+                if (confirm('Przywrócić szablon do stanu sprzed edycji? Wszystkie zmiany zostaną utracone.')) iddResetToOriginal()
               }}>
                 Przywróć szablon
               </button>
             )}
-            {!isDefault && (
+            {module === 'idd' && !isDefault && (
               <button className="btn btn-ghost btn-sm" onClick={() => {
-                if (isDirty && !confirm('Masz niezapisane zmiany. Czy chcesz wrócić do domyślnego schematu?')) return
-                loadDefault()
+                if (iddIsDirty && !confirm('Masz niezapisane zmiany. Czy chcesz wrócić do domyślnego schematu?')) return
+                iddLoadDefault()
                 setProgramUrl('')
                 setSiteSlug('')
               }}>
                 ↩ Wróć do default
               </button>
             )}
+
+            {/* Mail APK-specific actions */}
+            {module === 'mail-apk' && apkIsDirty && (
+              <span className="dirty-badge">● Niezapisane zmiany</span>
+            )}
+            {module === 'mail-apk' && apkCanUndo && (
+              <button className="btn btn-ghost btn-sm" onClick={apkUndoLast} title="Cofnij ostatnią zmianę">
+                ↩ Cofnij
+              </button>
+            )}
+            {module === 'mail-apk' && apkIsDirty && (
+              <button className="btn btn-ghost btn-sm" onClick={() => {
+                if (confirm('Przywrócić szablon do stanu sprzed edycji? Wszystkie zmiany zostaną utracone.')) apkResetToOriginal()
+              }}>
+                Przywróć szablon
+              </button>
+            )}
+
+            {/* Mail RODO-specific actions */}
+            {module === 'mail-rodo' && rodoIsDirty && (
+              <span className="dirty-badge">● Niezapisane zmiany</span>
+            )}
+            {module === 'mail-rodo' && rodoCanUndo && (
+              <button className="btn btn-ghost btn-sm" onClick={rodoUndoLast} title="Cofnij ostatnią zmianę">
+                ↩ Cofnij
+              </button>
+            )}
+            {module === 'mail-rodo' && rodoIsDirty && (
+              <button className="btn btn-ghost btn-sm" onClick={() => {
+                if (confirm('Przywrócić szablon do stanu sprzed edycji? Wszystkie zmiany zostaną utracone.')) rodoResetToOriginal()
+              }}>
+                Przywróć szablon
+              </button>
+            )}
+
             <button className="btn btn-secondary" onClick={() => setShowImport(true)}>
               Wczytaj JSON
             </button>
-            <button className="btn btn-primary" onClick={handleExport} disabled={!isDirty || !!exportStep || !formData}>
+            <button className="btn btn-primary" onClick={handleExport} disabled={!!exportStep}>
               {exportStep === 'translating' ? 'Tłumaczę…' : exportStep === 'packing' ? 'Pakuję…' : 'Pobierz ZIP'}
             </button>
           </div>
@@ -268,7 +345,7 @@ export default function App() {
 
         <nav className="module-tabs">
           {[
-            { id: 'idd',            label: 'Formularz IDD' },
+            { id: 'idd',            label: 'Formularz APK' },
             { id: 'mail-apk',       label: 'Mail APK' },
             { id: 'mail-rodo',      label: 'Mail RODO' },
             { id: 'print-apk',      label: 'Wydruk APK' },
@@ -307,6 +384,28 @@ export default function App() {
           )}
 
           <main className="canvas">
+            <div style={{ display: module === 'mail-apk' ? 'contents' : 'none' }}>
+              <MailApkEditor
+                subject={apkSubject}
+                sections={apkSections}
+                updateSubject={apkUpdateSubject}
+                updateSection={apkUpdateSection}
+                updateOathItems={apkUpdateOathItems}
+                allowedVars={apkAllowedVars}
+                loadMailApk={loadMailApk}
+              />
+            </div>
+            <div style={{ display: module === 'mail-rodo' ? 'contents' : 'none' }}>
+              <MailRodoEditor
+                subject={rodoSubject}
+                sections={rodoSections}
+                clauses={rodoClauses}
+                updateSubject={rodoUpdateSubject}
+                updateSection={rodoUpdateSection}
+                updateClause={rodoUpdateClause}
+                allowedVars={rodoAllowedVars}
+              />
+            </div>
             {module === 'idd' ? (
               <>
                 <div className="canvas-meta">
@@ -348,9 +447,9 @@ export default function App() {
                   view={view}
                 />
               </>
-            ) : (
+            ) : module !== 'mail-apk' && module !== 'mail-rodo' ? (
               <PlaceholderModule module={module} />
-            )}
+            ) : null}
           </main>
         </div>
       </div>
@@ -367,9 +466,17 @@ export default function App() {
       {showImport && (
         <JsonImport
           onLoad={(rawJson) => {
-            loadForm(rawJson)
-            const id = rawJson?.$id?.split('/').pop() ?? ''
-            if (id && id !== 'default') setSiteSlug(id)
+            if (rawJson?.service_tag === 'gdpr') {
+              loadMailRodo(rawJson)
+              setModule('mail-rodo')
+            } else if (rawJson?.service_tag !== undefined || rawJson?.send_channel !== undefined) {
+              loadMailApk(rawJson)
+              setModule('mail-apk')
+            } else {
+              loadForm(rawJson)
+              const id = rawJson?.$id?.split('/').pop() ?? ''
+              if (id && id !== 'default') setSiteSlug(id)
+            }
           }}
           onClose={() => setShowImport(false)}
         />
